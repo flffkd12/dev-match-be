@@ -38,10 +38,12 @@ out/
 
 .idea/
 
-### custum ###
-application-secret.yml
-.claude/
+### Local DB ###
 db_dev.mv.db
 db_dev.trace.db
-.env.default
 
+### Gemini ###
+GEMINI.md
+
+### Secret Info ###
+.env
