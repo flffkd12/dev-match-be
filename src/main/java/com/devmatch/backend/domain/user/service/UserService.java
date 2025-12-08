@@ -2,8 +2,8 @@ package com.devmatch.backend.domain.user.service;
 
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.repository.UserRepository;
-import com.devmatch.backend.exception.ServiceException;
 import com.devmatch.backend.global.RsData;
+import com.devmatch.backend.global.exception.ServiceException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;

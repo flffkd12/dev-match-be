@@ -1,4 +1,4 @@
-package com.devmatch.backend.exception;
+package com.devmatch.backend.global.exception;
 
 import com.devmatch.backend.global.RsData;
 

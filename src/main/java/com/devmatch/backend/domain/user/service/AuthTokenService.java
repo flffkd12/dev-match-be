@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.user.service;
 
 import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.standard.util.Ut;
+import com.devmatch.backend.global.util.Ut;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

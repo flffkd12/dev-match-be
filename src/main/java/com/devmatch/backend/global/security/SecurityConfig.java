@@ -3,7 +3,7 @@ package com.devmatch.backend.global.security;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import com.devmatch.backend.global.RsData;
-import com.devmatch.backend.standard.util.Ut;
+import com.devmatch.backend.global.util.Ut;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -91,7 +91,8 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
 
     // 허용할 오리진 설정
-    configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://nbe-6-8-2-team08-vaug.vercel.app"));
+    configuration.setAllowedOrigins(
+        List.of("http://localhost:3000", "https://nbe-6-8-2-team08-vaug.vercel.app"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
 
     // 자격 증명 허용 설정

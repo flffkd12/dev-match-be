@@ -1,4 +1,4 @@
-package com.devmatch.backend.standard.util;
+package com.devmatch.backend.global.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;

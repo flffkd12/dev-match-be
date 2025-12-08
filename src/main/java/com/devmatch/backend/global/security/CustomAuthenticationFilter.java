@@ -3,10 +3,10 @@ package com.devmatch.backend.global.security;
 
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
-import com.devmatch.backend.exception.ServiceException;
 import com.devmatch.backend.global.RsData;
+import com.devmatch.backend.global.exception.ServiceException;
 import com.devmatch.backend.global.rq.Rq;
-import com.devmatch.backend.standard.util.Ut;
+import com.devmatch.backend.global.util.Ut;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

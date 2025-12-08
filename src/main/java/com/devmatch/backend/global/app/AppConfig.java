@@ -1,6 +1,6 @@
 package com.devmatch.backend.global.app;
 
-import com.devmatch.backend.standard.util.Ut;
+import com.devmatch.backend.global.util.Ut;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
