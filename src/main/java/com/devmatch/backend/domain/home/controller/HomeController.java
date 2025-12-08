@@ -42,8 +42,6 @@ public class HomeController {
                  class="p-2 rounded hover:bg-gray-100">카카오 로그인</a>
               <a href="/oauth2/authorization/google"
                  class="p-2 rounded hover:bg-gray-100">구글 로그인</a>
-              <a href="/oauth2/authorization/naver"
-                 class="p-2 rounded hover:bg-gray-100">네이버 로그인</a>
         
               <a href="#" onclick="logout()"
                  class="p-2 rounded hover:bg-gray-100">로그아웃</a>

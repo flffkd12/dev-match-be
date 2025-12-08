@@ -34,7 +34,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     String nickname = "";
     String profileImgUrl = "";
-    String username = "";
 
     //소셜 로그인에서 처음 로그인한거면 가입. 이미 가입했으면 수정
     //카카오 로그인했다가 로그아웃 후  구글 로그인 하면 계정 두 개 만들어지는데 이건 요즘 표준이라 함.
@@ -53,19 +52,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         nickname = (String) oAuth2User.getAttributes().get("name");
         profileImgUrl = (String) oAuth2User.getAttributes().get("picture");
       }
-      case "NAVER" -> {
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        Map<String, Object> attributesProperties = (Map<String, Object>) attributes.get("response");
-
-        oauthUserId = (String) attributesProperties.get("id");
-        nickname = (String) attributesProperties.get("nickname");
-        profileImgUrl = (String) attributesProperties.get("profile_image");
-      }
     }
 
     //유저 이름이 유니크 해야 하므로 소셜 서비스 이름과 아이디를 조합하여 유저 이름을 생성
     //예시: KAKAO__1234567890 뒷자리 숫자는 소셜 서비스에서 발급한 유저 아이디(고유함)
-    username = providerTypeCode + "__%s".formatted(oauthUserId);
+    String username = providerTypeCode + "__%s".formatted(oauthUserId);
     String password = "";//소셜 로그인은 비밀번호가 없으므로 빈 문자열로 설정
 
     User user = userService.modifyOrJoin(username, password, nickname, profileImgUrl).data();
