@@ -27,26 +27,35 @@ repositories {
 }
 
 dependencies {
+    // Spring AI
     implementation(platform("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}"))
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
 
+    // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    // Security, Authentication
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.ai:spring-ai-starter-model-openai")
-    compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    // DB
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("org.postgresql:postgresql")
+
+    // Utility
+    compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+
+    // Test
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
