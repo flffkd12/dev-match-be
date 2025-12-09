@@ -17,11 +17,10 @@ public class SecurityUser extends User implements OAuth2User {
   public SecurityUser(
       Long id,
       String username,
-      String password,
       String name,
       Collection<? extends GrantedAuthority> authorities
   ) {
-    super(username, password != null ? password : "", authorities);
+    super(username, "", authorities);
     this.id = id;
     this.name = name;
   }

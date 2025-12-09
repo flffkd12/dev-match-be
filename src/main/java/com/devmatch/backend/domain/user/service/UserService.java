@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +18,6 @@ public class UserService {
 
   private final AuthTokenService authTokenService;
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
-
 
   //이거는 타인의 id를 통해 타인을 가져올 때만 쓰셔야 합니다.
   //로그인 한 사람의 정보를 가져오고 싶다면 Rq.getActor()를 사용하세요.
@@ -36,20 +33,18 @@ public class UserService {
   }
 
   //테스트 계정 생성용
-  public User join(String username, String password, String nickname) {
-    return join(username, password, nickname, null);
+  public User join(String username, String nickname) {
+    return join(username, nickname, null);
   }
 
-  public User join(String username, String password, String nickname, String profileImgUrl) {
+  public User join(String username, String nickname, String profileImgUrl) {
     userRepository
         .findByUsername(username)
         .ifPresent(_member -> {
           throw new ServiceException("409-1", "이미 존재하는 아이디입니다.");
         });
 
-    password = (password != null && !password.isBlank()) ? passwordEncoder.encode(password) : null;
-
-    User user = new User(username, password, nickname, profileImgUrl);
+    User user = new User(username, nickname, profileImgUrl);
 
     return userRepository.save(user);
   }
@@ -76,12 +71,11 @@ public class UserService {
     return userRepository.findById(id);
   }
 
-  public RsData<User> modifyOrJoin(String username, String password, String nickname,
-      String profileImgUrl) {
+  public RsData<User> modifyOrJoin(String username, String nickname, String profileImgUrl) {
     User user = findByUsername(username).orElse(null);
 
     if (user == null) {
-      user = join(username, password, nickname, profileImgUrl);
+      user = join(username, nickname, profileImgUrl);
       return new RsData<>("201-1", "회원가입이 완료되었습니다.", user);
     }
 
