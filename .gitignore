@@ -39,8 +39,7 @@ out/
 .idea/
 
 ### Local DB ###
-db_dev.mv.db
-db_dev.trace.db
+*.db
 
 ### Gemini ###
 GEMINI.md
