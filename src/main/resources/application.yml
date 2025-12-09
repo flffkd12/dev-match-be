@@ -9,6 +9,8 @@ spring:
         registration:
           kakao:
             client-id: ${SPRING__SECURITY__OAUTH2__CLIENT__REGISTRATION__KAKAO__CLIENT_ID}
+            client-secret: ${SPRING__SECURITY__OAUTH2__CLIENT__REGISTRATION__KAKAO__CLIENT_SECRET}
+            client-authentication-method: client_secret_post
             scope: profile_nickname, profile_image
             client-name: Kakao
             authorization-grant-type: authorization_code
@@ -16,9 +18,9 @@ spring:
           google:
             client-id: ${SPRING__SECURITY__OAUTH2__CLIENT__REGISTRATION__GOOGLE__CLIENT_ID}
             client-secret: ${SPRING__SECURITY__OAUTH2__CLIENT__REGISTRATION__GOOGLE__CLIENT_SECRET}
-            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}' #사용자가 구글에서 로그인을 성공적으로 마치고 동의 절차를 완료했을 때, 구글이 사용자를 다시 돌려보낼 애플리케이션의 경로
-            client-name: Google
             scope: profile
+            client-name: Google
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}' #사용자가 구글에서 로그인을 성공적으로 마치고 동의 절차를 완료했을 때, 구글이 사용자를 다시 돌려보낼 애플리케이션의 경로
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -48,3 +50,9 @@ custom:
     secretKey: ${CUSTOM__JWT__SECRET_KEY}
   accessToken:
     expirationSeconds: "#{60*20}"
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.http: DEBUG

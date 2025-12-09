@@ -12,21 +12,13 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 
-// 소셜 로그인 요청을 처리하는 커스텀 OAuth2AuthorizationRequestResolver
+// 소셜 로그인에 사용할 인가 요청 객체 생성 클래스
 @Component
 @RequiredArgsConstructor
 public class CustomOAuth2AuthorizationRequestResolver implements
     OAuth2AuthorizationRequestResolver {
 
   private final ClientRegistrationRepository clientRegistrationRepository;
-
-  private DefaultOAuth2AuthorizationRequestResolver createDefaultResolver() {
-    // ✅ Spring Security 기본 Authorization URI 사용
-    return new DefaultOAuth2AuthorizationRequestResolver(
-        clientRegistrationRepository,
-        OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
-    );
-  }
 
   @Override
   public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
@@ -35,36 +27,41 @@ public class CustomOAuth2AuthorizationRequestResolver implements
   }
 
   @Override
-  public OAuth2AuthorizationRequest resolve(HttpServletRequest request,
-      String clientRegistrationId) {
+  public OAuth2AuthorizationRequest resolve(
+      HttpServletRequest request,
+      String clientRegistrationId
+  ) {
     OAuth2AuthorizationRequest req = createDefaultResolver().resolve(request, clientRegistrationId);
     return customizeState(req, request);
   }
 
-  private OAuth2AuthorizationRequest customizeState(OAuth2AuthorizationRequest req,
-      HttpServletRequest request) {
-      if (req == null) {
-          return null;
-      }
+  private DefaultOAuth2AuthorizationRequestResolver createDefaultResolver() {
+    return new DefaultOAuth2AuthorizationRequestResolver(
+        clientRegistrationRepository,
+        OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
+    );
+  }
 
-    // ✅ 요청 파라미터에서 redirectUrl 가져오기
+  private OAuth2AuthorizationRequest customizeState(
+      OAuth2AuthorizationRequest req,
+      HttpServletRequest request
+  ) {
+    if (req == null) {
+      return null;
+    }
+
     String redirectUrl = request.getParameter("redirectUrl");
-      if (redirectUrl == null) {
-          redirectUrl = "/";
-      }
+    if (redirectUrl == null) {
+      redirectUrl = "/";
+    }
 
-    // ✅ CSRF 방지용 nonce 추가
-    String originState = UUID.randomUUID().toString();
-
-    // ✅ redirectUrl#originState 결합
-    String rawState = redirectUrl + "#" + originState;
-
-    // ✅ Base64 URL-safe 인코딩
+    String nonce = UUID.randomUUID().toString();
+    String rawState = redirectUrl + "#" + nonce;
     String encodedState = Base64.getUrlEncoder()
         .encodeToString(rawState.getBytes(StandardCharsets.UTF_8));
 
     return OAuth2AuthorizationRequest.from(req)
-        .state(encodedState) // ✅ state 교체
+        .state(encodedState)
         .build();
   }
 }

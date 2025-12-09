@@ -23,6 +23,7 @@ public class SecurityConfig {
 
   private final CustomAuthenticationFilter customAuthenticationFilter;
   private final AuthenticationSuccessHandler customOAuth2LoginSuccessHandler;
+  private final CustomOAuth2LoginFailureHandler customOAuth2LoginFailureHandler;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,7 +49,8 @@ public class SecurityConfig {
         .httpBasic(AbstractHttpConfigurer::disable)
         //세션 사용 안함
         .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS))
-        .oauth2Login(oauth2Login -> oauth2Login.successHandler(customOAuth2LoginSuccessHandler))
+        .oauth2Login(oauth2Login -> oauth2Login.successHandler(customOAuth2LoginSuccessHandler)
+            .failureHandler(customOAuth2LoginFailureHandler))
         .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(
             exceptionHandling -> exceptionHandling

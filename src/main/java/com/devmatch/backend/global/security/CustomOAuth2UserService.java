@@ -1,6 +1,5 @@
 package com.devmatch.backend.global.security;
 
-
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
 import java.util.Map;
@@ -13,8 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//카카오 로그인 성공후 이쪽으로 보낸다.
-//소셜 서비스가 사용자에게 발급한 인증 코드를 통해 사용자 정보를 가져오는 서비스
+// 회원 확인 및 등록 관련 클래스
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,12 +20,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
   private final UserService userService;
 
-  // 카카오톡 로그인이 성공할 때 마다 이 함수가 실행된다.
   @Override
   @Transactional
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
-    OAuth2User oAuth2User = super.loadUser(userRequest);//로그인 성공한 시점이 여기(사진상의 8번 부분)
+    // 엑세스 토큰으로 사용자 정보 가져오기
+    OAuth2User oAuth2User = super.loadUser(userRequest);
 
     String oauthUserId = "";
     String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
@@ -35,8 +32,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     String nickname = "";
     String profileImgUrl = "";
 
-    //소셜 로그인에서 처음 로그인한거면 가입. 이미 가입했으면 수정
-    //카카오 로그인했다가 로그아웃 후  구글 로그인 하면 계정 두 개 만들어지는데 이건 요즘 표준이라 함.
     switch (providerTypeCode) {
       case "KAKAO" -> {
         Map<String, Object> attributes = oAuth2User.getAttributes();
