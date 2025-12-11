@@ -1,4 +1,4 @@
-package com.devmatch.backend.global.initData;
+package com.devmatch.backend.global.init;
 
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;

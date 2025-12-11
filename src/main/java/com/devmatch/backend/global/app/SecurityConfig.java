@@ -1,7 +1,9 @@
-package com.devmatch.backend.global.security;
+package com.devmatch.backend.global.app;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import com.devmatch.backend.domain.auth.security.CustomAuthenticationFilter;
+import com.devmatch.backend.domain.auth.security.CustomOAuth2LoginFailureHandler;
 import com.devmatch.backend.global.RsData;
 import com.devmatch.backend.global.util.Ut;
 import java.util.List;

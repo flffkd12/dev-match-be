@@ -1,4 +1,4 @@
-package com.devmatch.backend.global.security;
+package com.devmatch.backend.domain.auth.security;
 
 import java.util.Collection;
 import java.util.Map;

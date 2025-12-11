@@ -1,4 +1,4 @@
-package com.devmatch.backend.domain.user.service;
+package com.devmatch.backend.domain.auth.service;
 
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.util.Ut;
@@ -15,7 +15,7 @@ public class AuthTokenService {
   @Value("${custom.accessToken.expirationSeconds}")
   private int accessTokenExpirationSeconds;
 
-  String genAccessToken(User user) {
+  public String genAccessToken(User user) {
     long id = user.getId();
     String username = user.getUsername();//롬복
     String name = user.getNickName();//닉네임 가져오는 메서드
@@ -27,7 +27,7 @@ public class AuthTokenService {
     );
   }
 
-  Map<String, Object> payload(String accessToken) {
+  public Map<String, Object> payload(String accessToken) {
     Map<String, Object> parsedPayload = Ut.jwt.payload(jwtSecretKey, accessToken);
 
     if (parsedPayload == null) {

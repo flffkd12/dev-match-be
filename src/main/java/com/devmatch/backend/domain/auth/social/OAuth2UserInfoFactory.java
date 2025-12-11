@@ -1,6 +1,6 @@
-package com.devmatch.backend.domain.user.social;
+package com.devmatch.backend.domain.auth.social;
 
-import com.devmatch.backend.domain.user.enums.OAuthProvider;
+import com.devmatch.backend.domain.auth.social.enums.OAuthProvider;
 import java.util.Map;
 
 public class OAuth2UserInfoFactory {

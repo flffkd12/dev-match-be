@@ -1,4 +1,4 @@
-package com.devmatch.backend.global.security;
+package com.devmatch.backend.domain.auth.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;

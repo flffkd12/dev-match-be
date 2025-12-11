@@ -1,5 +1,6 @@
 package com.devmatch.backend.domain.user.service;
 
+import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.repository.UserRepository;
 import com.devmatch.backend.global.RsData;

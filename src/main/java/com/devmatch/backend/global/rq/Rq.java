@@ -1,8 +1,8 @@
 package com.devmatch.backend.global.rq;
 
+import com.devmatch.backend.domain.auth.security.SecurityUser;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
-import com.devmatch.backend.global.security.SecurityUser;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

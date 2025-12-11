@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.service.ApplicationService;
+import com.devmatch.backend.domain.auth.security.CustomAuthenticationFilter;
 import com.devmatch.backend.domain.project.dto.ProjectApplyRequest;
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
@@ -27,7 +28,6 @@ import com.devmatch.backend.domain.project.entity.ProjectStatus;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.rq.Rq;
-import com.devmatch.backend.global.security.CustomAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Collections;

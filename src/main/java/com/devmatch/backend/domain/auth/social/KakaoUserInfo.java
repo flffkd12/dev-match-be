@@ -1,4 +1,4 @@
-package com.devmatch.backend.domain.user.social;
+package com.devmatch.backend.domain.auth.social;
 
 import java.util.Map;
 

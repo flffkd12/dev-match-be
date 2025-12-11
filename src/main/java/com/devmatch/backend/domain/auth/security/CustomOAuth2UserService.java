@@ -1,10 +1,10 @@
-package com.devmatch.backend.global.security;
+package com.devmatch.backend.domain.auth.security;
 
+import com.devmatch.backend.domain.auth.social.OAuth2UserInfo;
+import com.devmatch.backend.domain.auth.social.OAuth2UserInfoFactory;
+import com.devmatch.backend.domain.auth.social.enums.OAuthProvider;
 import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.domain.user.enums.OAuthProvider;
 import com.devmatch.backend.domain.user.service.UserService;
-import com.devmatch.backend.domain.user.social.OAuth2UserInfo;
-import com.devmatch.backend.domain.user.social.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
