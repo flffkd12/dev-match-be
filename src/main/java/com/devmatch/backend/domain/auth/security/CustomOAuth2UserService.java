@@ -27,7 +27,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2User oAuth2User = super.loadUser(userRequest);
 
-    log.info("Kakao OAuth2User Attributes: {}", oAuth2User.getAttributes());
+    log.info("OAuth2User Attributes: {}", oAuth2User.getAttributes());
 
     OAuthProvider oAuthProvider = OAuthProvider.valueOf(
         userRequest.getClientRegistration().getRegistrationId().toUpperCase());

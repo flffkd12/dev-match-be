@@ -22,7 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Entity
-@Table(name = "users") // 테이블 이름을 명시적으로 지정
+@Table(name = "users")
 @Getter
 @NoArgsConstructor
 public class User {
@@ -63,23 +63,6 @@ public class User {
     this.nickname = name;
   }
 
-  //테스트 계정 생성용
-  public void modifyApiKey(String apiKey) {//이거 더미데이터들 api키 이름이랑 똑같게 하려고 쓴거라 삭제할듯
-    this.apiKey = apiKey;
-  }
-
-  //그래도 나중에 비속어 사용한 글이 있으면 삭제하게 남겨두는 편이 좋다고 하심.
-  public boolean isAdmin() {
-    if ("system".equals(username)) {
-      return true;
-    }
-    if ("admin".equals(username)) {
-      return true;
-    }
-
-    return false;
-  }
-
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return getAuthoritiesAsStringList()
         .stream()
@@ -88,13 +71,7 @@ public class User {
   }
 
   private List<String> getAuthoritiesAsStringList() {
-    List<String> authorities = new ArrayList<>();
-
-    if (isAdmin()) {
-      authorities.add("ROLE_ADMIN");
-    }
-
-    return authorities;
+    return new ArrayList<>();
   }
 
   public void modify(String nickname, String profileImgUrl) {
