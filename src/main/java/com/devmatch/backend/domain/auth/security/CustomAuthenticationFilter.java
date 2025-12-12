@@ -129,8 +129,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     //이게 Rq에에서 getActor()를 통해 꺼내지는 정보이다.
     UserDetails authUser = new SecurityUser(
         user.getId(),
-        user.getUsername(),
-        user.getNickName(),
+        user.getOauthId(),
+        user.getNickname(),
         user.getAuthorities()
     );
 

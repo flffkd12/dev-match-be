@@ -18,7 +18,7 @@ public record ApplicationDetailResponseDto(
   public ApplicationDetailResponseDto(Application application) {
     this(
         application.getId(),
-        application.getUser().getNickName(),
+        application.getUser().getNickname(),
         application.getStatus(),
         application.getAppliedAt(),
         application.getSkillScore().stream()

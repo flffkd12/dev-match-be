@@ -14,7 +14,7 @@ public class ProjectMapper {
         Arrays.stream(project.getTechStack().split(", ")).toList(),
         project.getTeamSize(),
         project.getCurrentTeamSize(),
-        project.getCreator().getNickName(),
+        project.getCreator().getNickname(),
         project.getStatus().name(),
         project.getContent(),
         project.getDurationWeeks(),

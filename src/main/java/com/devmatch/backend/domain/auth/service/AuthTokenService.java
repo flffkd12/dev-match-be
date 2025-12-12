@@ -17,8 +17,8 @@ public class AuthTokenService {
 
   public String genAccessToken(User user) {
     long id = user.getId();
-    String username = user.getUsername();//롬복
-    String name = user.getNickName();//닉네임 가져오는 메서드
+    String username = user.getOauthId();//롬복
+    String name = user.getNickname();//닉네임 가져오는 메서드
 
     return Ut.jwt.toString(
         jwtSecretKey,

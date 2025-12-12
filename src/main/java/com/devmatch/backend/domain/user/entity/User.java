@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "users")
@@ -32,24 +33,26 @@ public class User {
   @NotNull
   @Column(unique = true)
   @Size(min = 1, max = 50, message = "사용자 이름은 1자 이상 50자 이하이어야 합니다.")
-  private String username;//기존 name 필드 대신 사용, 유니크한 사용자 이름
+  private String oauthId;
+
   @Column(unique = true)
   private String apiKey;//리프레시 토큰
 
   private String nickname;
   private String profileImgUrl;
 
-  public User(Long id, String username, String nickname) {
+  public User(Long id, String oAuthId, String nickname) {
     setId(id);
-    this.username = username;
+    this.oauthId = oAuthId;
     this.nickname = nickname;
   }
 
-  public User(String username, String nickname, String profileImgUrl) {
-    this.username = username;
-    this.nickname = nickname;
-    this.profileImgUrl = profileImgUrl;
+  public User(String oAuthId, String nickname, String profileImgUrl) {
+    this.oauthId = oAuthId;
     this.apiKey = UUID.randomUUID().toString();
+    this.nickname = nickname;
+    this.profileImgUrl = StringUtils.hasText(profileImgUrl) ? profileImgUrl
+        : "https://placehold.co/600x600?text=U_U";
   }
 
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -59,14 +62,5 @@ public class User {
   public void modify(String nickname, String profileImgUrl) {
     this.nickname = nickname;
     this.profileImgUrl = profileImgUrl;
-  }
-
-  //getActor를 통한 유저 객체에는 url이 없으니 getActorFromDb를 통해 DB에서 꺼낸 유저 객체를 사용해서 url을 사용.
-  public String getProfileImgUrlOrDefault() {
-    if (profileImgUrl == null) {
-      return "https://placehold.co/600x600?text=U_U";
-    }
-
-    return profileImgUrl;
   }
 }

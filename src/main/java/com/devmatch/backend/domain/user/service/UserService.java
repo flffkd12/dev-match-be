@@ -20,8 +20,6 @@ public class UserService {
   private final AuthTokenService authTokenService;
   private final UserRepository userRepository;
 
-  //이거는 타인의 id를 통해 타인을 가져올 때만 쓰셔야 합니다.
-  //로그인 한 사람의 정보를 가져오고 싶다면 Rq.getActor()를 사용하세요.
   @Transactional(readOnly = true)
   public User getUser(Long id) {
     return userRepository.findById(id).orElseThrow(() ->
@@ -40,7 +38,7 @@ public class UserService {
 
   public User join(String username, String nickname, String profileImgUrl) {
     userRepository
-        .findByUsername(username)
+        .findByOauthId(username)
         .ifPresent(_member -> {
           throw new ServiceException("409-1", "이미 존재하는 아이디입니다.");
         });
@@ -51,8 +49,8 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<User> findByUsername(String username) {
-    return userRepository.findByUsername(username);
+  public User findByUsername(String username) {
+    return userRepository.findByOauthId(username).orElse(null);
   }
 
   @Transactional(readOnly = true)
@@ -73,19 +71,15 @@ public class UserService {
   }
 
   public RsData<User> modifyOrJoin(String username, String nickname, String profileImgUrl) {
-    User user = findByUsername(username).orElse(null);
+    User user = findByUsername(username);
 
     if (user == null) {
       user = join(username, nickname, profileImgUrl);
       return new RsData<>("201-1", "회원가입이 완료되었습니다.", user);
     }
 
-    modify(user, nickname, profileImgUrl);
+    user.modify(nickname, profileImgUrl);
 
     return new RsData<>("200-1", "회원 정보가 수정되었습니다.", user);
-  }
-
-  private void modify(User user, String nickname, String profileImgUrl) {
-    user.modify(nickname, profileImgUrl);
   }
 }
