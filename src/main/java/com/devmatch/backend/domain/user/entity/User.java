@@ -1,7 +1,6 @@
 package com.devmatch.backend.domain.user.entity;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +14,6 @@ import java.util.Collections;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
 
@@ -27,7 +25,6 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
-  @Setter(PROTECTED)
   private Long id;
 
   @NotNull
@@ -40,12 +37,6 @@ public class User {
 
   private String nickname;
   private String profileImgUrl;
-
-  public User(Long id, String oAuthId, String nickname) {
-    setId(id);
-    this.oauthId = oAuthId;
-    this.nickname = nickname;
-  }
 
   public User(String oAuthId, String nickname, String profileImgUrl) {
     this.oauthId = oAuthId;

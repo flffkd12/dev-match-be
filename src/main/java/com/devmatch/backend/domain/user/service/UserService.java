@@ -35,7 +35,7 @@ public class UserService {
     return userRepository.count();
   }
 
-  private User join(String oauthId, String nickname, String profileImgUrl) {
+  public User join(String oauthId, String nickname, String profileImgUrl) {
     return userRepository.save(new User(oauthId, nickname, profileImgUrl));
   }
 

@@ -105,10 +105,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
       Map<String, Object> payload = authTokenService.payload(accessToken);
 
       if (payload != null) {
-        int id = (int) payload.get("id");
-        String username = (String) payload.get("username");
-        String name = (String) payload.get("name");
-        user = new User((long) id, username, name);
+        Long id = (Long) payload.get("id");
+        user = userService.getUser(id);
 
         isAccessTokenValid = true;
       }
