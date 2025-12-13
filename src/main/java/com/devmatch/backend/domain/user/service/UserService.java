@@ -1,9 +1,7 @@
 package com.devmatch.backend.domain.user.service;
 
-import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.repository.UserRepository;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-  private final AuthTokenService authTokenService;
   private final UserRepository userRepository;
 
   @Transactional
@@ -28,10 +25,6 @@ public class UserService {
   @Transactional
   public User join(String oauthId, String nickname, String profileImgUrl) {
     return userRepository.save(new User(oauthId, nickname, profileImgUrl));
-  }
-
-  public User findByOauthId(String oauthId) {
-    return userRepository.findByOauthId(oauthId).orElse(null);
   }
 
   public User getUser(Long id) {
@@ -47,11 +40,7 @@ public class UserService {
     return userRepository.findByApiKey(apiKey);
   }
 
-  public String genAccessToken(User user) {
-    return authTokenService.genAccessToken(user);
-  }
-
-  public Map<String, Object> payload(String accessToken) {
-    return authTokenService.payload(accessToken);
+  private User findByOauthId(String oauthId) {
+    return userRepository.findByOauthId(oauthId).orElse(null);
   }
 }

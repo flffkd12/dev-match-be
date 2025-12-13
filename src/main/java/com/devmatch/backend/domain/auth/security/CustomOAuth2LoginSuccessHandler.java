@@ -1,8 +1,8 @@
 package com.devmatch.backend.domain.auth.security;
 
 
+import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.rq.Rq;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-  private final UserService userService;
+  private final AuthTokenService authTokenService;
   private final Rq rq;
 
   @Override
@@ -30,7 +30,7 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
     //CustomOAuth2UserService에서 리턴한 객체 소셜 로그인한 유저 정보를 토대로 DB에서 유저 정보를 가져옴
     User actor = rq.getActorFromDb();
 
-    String accessToken = userService.genAccessToken(actor);
+    String accessToken = authTokenService.genAccessToken(actor);
 
     rq.setCookie("apiKey", actor.getApiKey());//DB에서 가져와야 한다.
     rq.setCookie("accessToken", accessToken);

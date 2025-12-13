@@ -1,6 +1,7 @@
 package com.devmatch.backend.domain.auth.security;
 
 
+import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.RsData;
@@ -25,7 +26,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
-  private final UserService memberService;
+  private final AuthTokenService authTokenService;
+  private final UserService userService;
   private final Rq rq;
 
   @Override
@@ -100,7 +102,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     boolean isAccessTokenValid = false;
 
     if (isAccessTokenExists) {
-      Map<String, Object> payload = memberService.payload(accessToken);
+      Map<String, Object> payload = authTokenService.payload(accessToken);
 
       if (payload != null) {
         int id = (int) payload.get("id");
@@ -113,13 +115,13 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     }
 
     if (user == null) {
-      user = memberService
+      user = userService
           .findByApiKey(apiKey)
           .orElseThrow(() -> new ServiceException("401-3", "API 키가 유효하지 않습니다."));
     }
 
     if (isAccessTokenExists && !isAccessTokenValid) {
-      String actorAccessToken = memberService.genAccessToken(user);
+      String actorAccessToken = authTokenService.genAccessToken(user);
 
       rq.setCookie("accessToken", actorAccessToken);
       rq.setHeader("Authorization", actorAccessToken);
