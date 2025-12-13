@@ -22,22 +22,21 @@ public class UserService {
         : user.modify(nickname, profileImgUrl);
   }
 
-  @Transactional
-  public User join(String oauthId, String nickname, String profileImgUrl) {
-    return userRepository.save(new User(oauthId, nickname, profileImgUrl));
-  }
-
   public User getUser(Long id) {
     return userRepository.findById(id).orElseThrow(() ->
         new NoSuchElementException("해당 ID 사용자가 없습니다. ID: " + id));
+  }
+
+  public Optional<User> findByApiKey(String apiKey) {
+    return userRepository.findByApiKey(apiKey);
   }
 
   public long count() {
     return userRepository.count();
   }
 
-  public Optional<User> findByApiKey(String apiKey) {
-    return userRepository.findByApiKey(apiKey);
+  private User join(String oauthId, String nickname, String profileImgUrl) {
+    return userRepository.save(new User(oauthId, nickname, profileImgUrl));
   }
 
   private User findByOauthId(String oauthId) {
