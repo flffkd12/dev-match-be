@@ -38,8 +38,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     String oAuthUserId = userInfo.getProviderId();
     String nickname = userInfo.getNickname();
     String profileImgUrl = userInfo.getImageUrl();
-    String username = oAuthProvider.name() + "_%s".formatted(oAuthUserId);
-    User user = userService.modifyOrJoin(username, nickname, profileImgUrl).data();
+    String oauthId = oAuthProvider.name() + "_%s".formatted(oAuthUserId);
+    User user = userService.modifyOrJoin(oauthId, nickname, profileImgUrl);
 
     return new SecurityUser(
         user.getId(),

@@ -59,8 +59,9 @@ public class User {
     return Collections.emptyList();
   }
 
-  public void modify(String nickname, String profileImgUrl) {
+  public User modify(String nickname, String profileImgUrl) {
     this.nickname = nickname;
     this.profileImgUrl = profileImgUrl;
+    return this;
   }
 }
