@@ -19,8 +19,8 @@ public class InitialDataService {
       return;
     }
 
-    userService.join("user1", "유저1");
-    userService.join("user2", "유저2");
-    userService.join("user3", "유저3");
+    userService.join("user1", "유저1", null);
+    userService.join("user2", "유저2", null);
+    userService.join("user3", "유저3", null);
   }
 }

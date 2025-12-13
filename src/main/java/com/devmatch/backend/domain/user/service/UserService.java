@@ -31,11 +31,6 @@ public class UserService {
     return userRepository.count();
   }
 
-  //테스트 계정 생성용
-  public User join(String username, String nickname) {
-    return join(username, nickname, null);
-  }
-
   public User join(String username, String nickname, String profileImgUrl) {
     userRepository
         .findByOauthId(username)
