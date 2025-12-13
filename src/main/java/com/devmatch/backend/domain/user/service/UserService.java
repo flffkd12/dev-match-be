@@ -2,8 +2,8 @@ package com.devmatch.backend.domain.user.service;
 
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.repository.UserRepository;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +22,15 @@ public class UserService {
         : user.modify(nickname, profileImgUrl);
   }
 
-  public User getUser(Long id) {
-    return userRepository.findById(id).orElseThrow(() ->
-        new NoSuchElementException("해당 ID 사용자가 없습니다. ID: " + id));
+  public User getUser(Long userId) {
+    return userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
   }
 
-  public Optional<User> findByRefreshToken(String refreshToken) {
-  return userRepository.findByRefreshToken(refreshToken);  }
+  public User getUserByRefreshToken(String refreshToken) {
+    return userRepository.findByRefreshToken(refreshToken)
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+  }
 
   public long count() {
     return userRepository.count();

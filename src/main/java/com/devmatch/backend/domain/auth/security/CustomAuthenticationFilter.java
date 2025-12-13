@@ -113,9 +113,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     }
 
     if (user == null) {
-      user = userService
-          .findByRefreshToken(refreshToken)
-          .orElseThrow(() -> new ServiceException("401-3", "Refresh 토큰이 유효하지 않습니다."));
+      user = userService.getUserByRefreshToken(refreshToken);
     }
 
     if (isAccessTokenExists && !isAccessTokenValid) {
