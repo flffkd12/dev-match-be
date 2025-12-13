@@ -4,7 +4,6 @@ import com.devmatch.backend.domain.analysis.dto.AnalysisResultResponse;
 import com.devmatch.backend.domain.analysis.service.AnalysisService;
 import com.devmatch.backend.global.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +26,7 @@ public class AnalysisController {
         analysisService.getAnalysisResult(applicationId)
     );
 
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(new ApiResponse<>("조회 성공", analysisResultResponse));
+    return ResponseEntity.ok(ApiResponse.success("조회 성공", analysisResultResponse));
   }
 
   @PostMapping("/application/{applicationId}")
@@ -40,9 +37,7 @@ public class AnalysisController {
         analysisService.createAnalysisResult(applicationId)
     );
 
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(new ApiResponse<>("분석 결과 생성 성공", analysisResultResponse));
+    return ResponseEntity.ok(ApiResponse.success("분석 결과 생성 성공", analysisResultResponse));
   }
 
   @PostMapping("/project/{projectId}/role-assignment")
@@ -50,9 +45,6 @@ public class AnalysisController {
       @PathVariable Long projectId
   ) {
     String roleAssignment = analysisService.createTeamRoleAssignment(projectId);
-
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(new ApiResponse<>("팀 역할 분배 완료", roleAssignment));
+    return ResponseEntity.ok(ApiResponse.success("팀 역할 분배 완료", roleAssignment));
   }
 }

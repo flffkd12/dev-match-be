@@ -3,15 +3,24 @@ package com.devmatch.backend.global;
 import lombok.Builder;
 
 @Builder
-public record ApiResponse<T>(Boolean success, String resultCode, String message, T content) {
+public record ApiResponse<T>(String resultCode, String message, T content) {
 
-  public ApiResponse(String msg) {
-    this(msg, null);
+  private final static String SUCCESS_CODE = "200";
+
+  public static <T> ApiResponse<T> success(String message) {
+    return success(message, null);
+  }
+
+  public static <T> ApiResponse<T> success(String message, T content) {
+    return ApiResponse.<T>builder()
+        .resultCode(SUCCESS_CODE)
+        .message(message)
+        .content(content)
+        .build();
   }
 
   public static <T> ApiResponse<T> fail(String resultCode, String message) {
     return ApiResponse.<T>builder()
-        .success(false)
         .resultCode(resultCode)
         .message(message)
         .content(null)

@@ -6,7 +6,6 @@ import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.global.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,17 +34,7 @@ public class ApplicationController {
   ) {
     ApplicationDetailResponseDto applicationDetailResponseDto =
         applicationService.getApplicationDetail(id);
-
-    // 성공 응답
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(
-            new ApiResponse<>(
-                "%s 번 지원서의 상세 정보 조회를 성공했습니다."
-                    .formatted(applicationDetailResponseDto.applicationId()),
-                applicationDetailResponseDto
-            )
-        );
+    return ResponseEntity.ok(ApiResponse.success("지원서의 상세 정보 조회 성공", applicationDetailResponseDto));
   }
 
   /**
@@ -59,22 +48,14 @@ public class ApplicationController {
       @PathVariable Long id
   ) {
     applicationService.deleteApplication(id);
-
-    // 성공 응답
-    return ResponseEntity
-        .status(HttpStatus.NO_CONTENT)
-        .body(
-            new ApiResponse<>(
-                "지원서의 삭제를 성공했습니다."
-            )
-        );
+    return ResponseEntity.ok(ApiResponse.success("지원서의 삭제 성공"));
   }
 
   /**
    * 지원서 상태 업데이트 API
    *
-   * @param id 지원서 ID
-   * @param reqBody       상태 업데이트 요청 DTO
+   * @param id      지원서 ID
+   * @param reqBody 상태 업데이트 요청 DTO
    * @return 상태 업데이트 성공 메시지
    */
   @PatchMapping("/{id}/status")
@@ -83,13 +64,6 @@ public class ApplicationController {
       @Valid @RequestBody ApplicationStatusUpdateRequestDto reqBody
   ) {
     applicationService.updateApplicationStatus(id, reqBody);
-
-    return ResponseEntity
-        .status(HttpStatus.NO_CONTENT)
-        .body(
-            new ApiResponse<>(
-                "지원서 상태를 업데이트했습니다."
-            )
-        );
+    return ResponseEntity.ok(ApiResponse.success("지원서 상태 업데이트 성공"));
   }
 }
