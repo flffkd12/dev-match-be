@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -26,7 +25,6 @@ public class User {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
-  @NotNull
   @Column(unique = true)
   private String oauthId;
 
