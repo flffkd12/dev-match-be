@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 //예시 프론트 url : <a href=http://localhost:8080/oauth2/authorization/kakao?redirectUrl=http://localhost:3000 />
-//로그인 성공하면 쿠키에 apiKey와 accessToken을 저장하고, state 파라미터를 확인하여 리다이렉트 URL을 설정하는 핸들러
+//로그인 성공하면 쿠키에 refreshToken와 accessToken을 저장하고, state 파라미터를 확인하여 리다이렉트 URL을 설정하는 핸들러
 @Component
 @RequiredArgsConstructor
 public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -32,7 +32,7 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
 
     String accessToken = authTokenService.genAccessToken(actor);
 
-    rq.setCookie("apiKey", actor.getApiKey());//DB에서 가져와야 한다.
+    rq.setCookie("refreshToken", actor.getRefreshToken());//DB에서 가져와야 한다.
     rq.setCookie("accessToken", accessToken);
 
     // ✅ 기본 리다이렉트 URL

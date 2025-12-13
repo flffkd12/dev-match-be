@@ -67,7 +67,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
       return;
     }
 
-    String apiKey;
+    String refreshToken;
     String accessToken;
 
     String headerAuthorization = rq.getHeader("Authorization", "");
@@ -79,20 +79,20 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
       String[] headerAuthorizationBits = headerAuthorization.split(" ", 3);
 
-      apiKey = headerAuthorizationBits[1];
+      refreshToken = headerAuthorizationBits[1];
       accessToken = headerAuthorizationBits.length == 3 ? headerAuthorizationBits[2] : "";
     } else {
-      apiKey = rq.getCookieValue("apiKey", "");
+      refreshToken = rq.getCookieValue("refreshToken", "");
       accessToken = rq.getCookieValue("accessToken", "");
     }
 
-    logger.debug("apiKey : " + apiKey);
+    logger.debug("refreshToken : " + refreshToken);
     logger.debug("accessToken : " + accessToken);
 
-    boolean isApiKeyExists = !apiKey.isBlank();
+    boolean isRefreshTokenExists = !refreshToken.isBlank();
     boolean isAccessTokenExists = !accessToken.isBlank();
 
-    if (!isApiKeyExists && !isAccessTokenExists) {
+    if (!isRefreshTokenExists && !isAccessTokenExists) {
       filterChain.doFilter(request, response);
       return;
     }
@@ -114,8 +114,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     if (user == null) {
       user = userService
-          .findByApiKey(apiKey)
-          .orElseThrow(() -> new ServiceException("401-3", "API 키가 유효하지 않습니다."));
+          .findByRefreshToken(refreshToken)
+          .orElseThrow(() -> new ServiceException("401-3", "Refresh 토큰이 유효하지 않습니다."));
     }
 
     if (isAccessTokenExists && !isAccessTokenValid) {

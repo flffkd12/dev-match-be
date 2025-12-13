@@ -27,9 +27,8 @@ public class UserService {
         new NoSuchElementException("해당 ID 사용자가 없습니다. ID: " + id));
   }
 
-  public Optional<User> findByApiKey(String apiKey) {
-    return userRepository.findByApiKey(apiKey);
-  }
+  public Optional<User> findByRefreshToken(String refreshToken) {
+  return userRepository.findByRefreshToken(refreshToken);  }
 
   public long count() {
     return userRepository.count();

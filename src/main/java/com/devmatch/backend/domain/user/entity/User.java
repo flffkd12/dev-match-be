@@ -33,14 +33,14 @@ public class User {
   private String oauthId;
 
   @Column(unique = true)
-  private String apiKey;//리프레시 토큰
+  private String refreshToken;
 
   private String nickname;
   private String profileImgUrl;
 
   public User(String oAuthId, String nickname, String profileImgUrl) {
     this.oauthId = oAuthId;
-    this.apiKey = UUID.randomUUID().toString();
+    this.refreshToken = UUID.randomUUID().toString();
     this.nickname = nickname;
     this.profileImgUrl = StringUtils.hasText(profileImgUrl) ? profileImgUrl
         : "https://placehold.co/600x600?text=U_U";
