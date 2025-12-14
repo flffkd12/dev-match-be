@@ -7,26 +7,28 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-//아마 나중에 Rq에 넣을듯. 이걸로 getActor() 메서드로 현재 로그인한 유저를 가져올 수 있음
 @Getter
 public class SecurityUser extends User implements OAuth2User {
 
-  private final Long id;
-  private final String name;
+  private final Long userId;
 
   public SecurityUser(
-      Long id,
+      Long userId,
       String oauthId,
-      String nickname,
       Collection<? extends GrantedAuthority> authorities
   ) {
     super(oauthId, "", authorities);
-    this.id = id;
-    this.name = nickname;
+    this.userId = userId;
   }
 
+  // 필요할 정보는 User 테이블에 존재
   @Override
   public Map<String, Object> getAttributes() {
     return Map.of();
+  }
+
+  @Override
+  public String getName() {
+    return super.getUsername();
   }
 }
