@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// 회원 확인 및 등록 관련 클래스
+// 회원 확인 및 등록 후 인증 객체 생성 관련 클래스
 @Service
 @RequiredArgsConstructor
 @Slf4j

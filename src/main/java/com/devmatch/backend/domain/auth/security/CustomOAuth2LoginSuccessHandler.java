@@ -1,57 +1,55 @@
 package com.devmatch.backend.domain.auth.security;
 
-
 import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
+import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.rq.Rq;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-//예시 프론트 url : <a href=http://localhost:8080/oauth2/authorization/kakao?redirectUrl=http://localhost:3000 />
-//로그인 성공하면 쿠키에 refreshToken와 accessToken을 저장하고, state 파라미터를 확인하여 리다이렉트 URL을 설정하는 핸들러
+// 인증 객체가 설정되고 나면 수행되는 작업 관련 클래스
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
   private final AuthTokenService authTokenService;
+  private final UserService userService;
   private final Rq rq;
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-      Authentication authentication) throws IOException, ServletException {
-    //CustomOAuth2UserService에서 리턴한 객체 소셜 로그인한 유저 정보를 토대로 DB에서 유저 정보를 가져옴
-    User actor = rq.getActorFromDb();
+  public void onAuthenticationSuccess(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Authentication authentication
+  ) throws IOException {
+    log.info("OAuth2 authentication success handler initiated.");
 
-    String accessToken = authTokenService.genAccessToken(actor);
+    SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+    User user = userService.getUser(securityUser.getUserId());
+    log.debug("User authenticated: userId={}", user.getId());
 
-    rq.setCookie("refreshToken", actor.getRefreshToken());//DB에서 가져와야 한다.
+    String accessToken = authTokenService.genAccessToken(user);
+    log.debug("Access token generated for user {}", user.getId());
+
+    rq.setCookie("refreshToken", user.getRefreshToken());
     rq.setCookie("accessToken", accessToken);
+    log.debug("Refresh and access tokens set as cookies for user {}", user.getId());
 
-    // ✅ 기본 리다이렉트 URL
-    String redirectUrl = "/";
+    String encodedState = request.getParameter("state");
+    String decodedState = new String(Base64.getUrlDecoder().decode(encodedState),
+        StandardCharsets.UTF_8);
+    String redirectUrl = decodedState.split("#")[0];
+    log.info("Redirecting user {} to URL: {}", user.getId(), redirectUrl);
 
-    // ✅ state 파라미터 확인
-    String stateParam = request.getParameter("state");
-    //CustomOAuth2AuthorizationRequestResolver에서 설정한 state
-
-    if (stateParam != null) {
-      // 1️⃣ Base64 URL-safe 디코딩
-      String decodedStateParam = new String(Base64.getUrlDecoder().decode(stateParam),
-          StandardCharsets.UTF_8);
-
-      // 2️⃣ '#' 앞은 redirectUrl, 뒤는 originState
-      redirectUrl = decodedStateParam.split("#", 2)[0];
-    }
-
-    // ✅ 최종 리다이렉트
-    rq.sendRedirect(redirectUrl);
+    response.sendRedirect(redirectUrl);
   }
 }
