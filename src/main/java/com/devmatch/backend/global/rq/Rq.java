@@ -71,35 +71,4 @@ public class Rq {
         )
         .orElse(defaultValue);
   }
-
-  public void setCookie(String name, String value) {
-    if (value == null) {
-      value = "";
-    }
-
-    Cookie cookie = new Cookie(name, value);
-    cookie.setPath("/");
-    cookie.setHttpOnly(true);
-    // 도메인 설정 제거 - 브라우저가 자동으로 설정하도록
-    // cookie.setDomain("localhost");
-    // HTTPS 환경에서만 Secure 설정
-    String scheme = req.getScheme();
-    if ("https".equals(scheme)) {
-      cookie.setSecure(true);
-    }
-    // 크로스 도메인 요청을 위해 SameSite=None 설정
-    cookie.setAttribute("SameSite", "None");
-
-    if (value.isBlank()) {
-      cookie.setMaxAge(0);
-    } else {
-      cookie.setMaxAge(60 * 60 * 24 * 365);
-    }
-
-    resp.addCookie(cookie);
-  }
-
-  public void deleteCookie(String name) {
-    setCookie(name, null);
-  }
 }

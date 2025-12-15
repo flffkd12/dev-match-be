@@ -7,6 +7,7 @@ import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.RsData;
 import com.devmatch.backend.global.exception.ServiceException;
 import com.devmatch.backend.global.rq.Rq;
+import com.devmatch.backend.global.util.CookieUtil;
 import com.devmatch.backend.global.util.Ut;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -119,7 +120,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     if (isAccessTokenExists && !isAccessTokenValid) {
       String actorAccessToken = authTokenService.genAccessToken(user);
 
-      rq.setCookie("accessToken", actorAccessToken);
+      CookieUtil.addCookie(response, "accessToken", actorAccessToken, -1);
       rq.setHeader("Authorization", actorAccessToken);
     }
 

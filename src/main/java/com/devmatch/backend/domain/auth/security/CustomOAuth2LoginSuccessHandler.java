@@ -3,7 +3,7 @@ package com.devmatch.backend.domain.auth.security;
 import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
-import com.devmatch.backend.global.rq.Rq;
+import com.devmatch.backend.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,7 +23,6 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
 
   private final AuthTokenService authTokenService;
   private final UserService userService;
-  private final Rq rq;
 
   @Override
   public void onAuthenticationSuccess(
@@ -40,8 +39,8 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
     String accessToken = authTokenService.genAccessToken(user);
     log.debug("Access token generated for user {}", user.getId());
 
-    rq.setCookie("refreshToken", user.getRefreshToken());
-    rq.setCookie("accessToken", accessToken);
+    CookieUtil.addCookie(response, "refreshToken", user.getRefreshToken());
+    CookieUtil.addCookie(response, "accessToken", accessToken, -1);
     log.debug("Refresh and access tokens set as cookies for user {}", user.getId());
 
     String encodedState = request.getParameter("state");
