@@ -10,8 +10,7 @@ import com.devmatch.backend.domain.application.repository.ApplicationRepository;
 import com.devmatch.backend.domain.project.dto.ProjectApplyRequest;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.service.ProjectService;
-import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.global.rq.Rq;
+import com.devmatch.backend.domain.user.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,16 +25,18 @@ public class ApplicationService {
 
   private final ApplicationRepository applicationRepository;
   private final ProjectService projectService;
-  private final Rq rq;
+  private final UserService userService;
 
-  // 지원서 작성 로직
   @Transactional
-  public ApplicationDetailResponseDto createApplication(Long projectId, ProjectApplyRequest projectApplyRequest) {
-    User user = rq.getActor(); // 현재 로그인한 사용자의 정보 가져오기
+  public ApplicationDetailResponseDto createApplication(
+      Long userId,
+      Long projectId,
+      ProjectApplyRequest projectApplyRequest
+  ) {
     Project project = projectService.getProject(projectId); // 프로젝트 ID로 프로젝트 정보 가져오기
 
     Application application = Application.builder()
-        .user(user)
+        .user(userService.getUser(userId))
         .project(project)
         .build();
 
@@ -90,7 +91,8 @@ public class ApplicationService {
 
   // 지원서 상태 업데이트 로직
   @Transactional
-  public void updateApplicationStatus(Long applicationId, ApplicationStatusUpdateRequestDto reqBody) {
+  public void updateApplicationStatus(Long applicationId,
+      ApplicationStatusUpdateRequestDto reqBody) {
     Application application = getApplicationByApplicationId(applicationId);
 
     // 지원서의 상태를 업데이트 하면서 프로젝트에도 반영

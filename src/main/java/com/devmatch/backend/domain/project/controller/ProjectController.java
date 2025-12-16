@@ -2,6 +2,7 @@ package com.devmatch.backend.domain.project.controller;
 
 import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
 import com.devmatch.backend.domain.application.service.ApplicationService;
+import com.devmatch.backend.domain.auth.security.SecurityUser;
 import com.devmatch.backend.domain.project.dto.ProjectApplyRequest;
 import com.devmatch.backend.domain.project.dto.ProjectContentUpdateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
@@ -9,11 +10,11 @@ import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
 import com.devmatch.backend.domain.project.dto.ProjectStatusUpdateRequest;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.ApiResponse;
-import com.devmatch.backend.global.rq.Rq;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,17 +29,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/projects")
 public class ProjectController {
 
-  private final Rq rq;
-
   private final ProjectService projectService;
   private final ApplicationService applicationService;
 
   @PostMapping
   public ResponseEntity<ApiResponse<ProjectDetailResponse>> create(
-      @Valid @RequestBody ProjectCreateRequest projectCreateRequest
+      @Valid @RequestBody ProjectCreateRequest projectCreateRequest,
+      @AuthenticationPrincipal SecurityUser securityUser
   ) {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 생성 성공",
-        projectService.createProject(rq.getActor().getId(), projectCreateRequest)));
+        projectService.createProject(securityUser.getUserId(), projectCreateRequest)));
   }
 
   @GetMapping
@@ -88,9 +88,10 @@ public class ProjectController {
   @PostMapping("/{id}/applications")
   public ResponseEntity<ApiResponse<ApplicationDetailResponseDto>> apply(
       @PathVariable Long id,
+      @AuthenticationPrincipal SecurityUser securityUser,
       @Valid @RequestBody ProjectApplyRequest projectApplyRequest
   ) {
     return ResponseEntity.ok(ApiResponse.success("프로젝트의 지원서 전체 목록 조회 성공",
-        applicationService.createApplication(id, projectApplyRequest)));
+        applicationService.createApplication(securityUser.getUserId(), id, projectApplyRequest)));
   }
 }
