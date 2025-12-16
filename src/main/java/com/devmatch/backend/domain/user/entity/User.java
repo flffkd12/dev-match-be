@@ -47,6 +47,7 @@ public class User {
   }
 
   public User modify(String nickname, String profileImgUrl) {
+    this.refreshToken = UUID.randomUUID().toString();
     this.nickname = nickname;
     this.profileImgUrl = profileImgUrl;
     return this;
