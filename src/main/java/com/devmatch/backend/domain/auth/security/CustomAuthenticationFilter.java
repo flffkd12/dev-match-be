@@ -55,6 +55,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         CookieUtil.addCookie(response, "accessToken", authTokenService.genAccessToken(user));
         setAuthenticationContext(user);
       } catch (Exception e) {
+        log.error("Invalid access token stack trace: ", e);
         throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
       }
     }
