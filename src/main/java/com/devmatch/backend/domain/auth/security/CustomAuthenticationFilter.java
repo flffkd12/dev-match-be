@@ -1,14 +1,10 @@
 package com.devmatch.backend.domain.auth.security;
 
-
 import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
-import com.devmatch.backend.global.RsData;
-import com.devmatch.backend.global.exception.ServiceException;
 import com.devmatch.backend.global.rq.Rq;
 import com.devmatch.backend.global.util.CookieUtil;
-import com.devmatch.backend.global.util.Ut;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,70 +23,28 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
   private final AuthTokenService authTokenService;
   private final UserService userService;
   private final Rq rq;
 
+  // 엑세스 토큰이 유효한지 확인하고, 인증된 사용자 정보를 SecurityContextHolder에 저장하는 메소드
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
-    logger.debug("Processing request for " + request.getRequestURI());
-
-    try {
-      work(request, response, filterChain);
-    } catch (ServiceException e) {
-      RsData<Void> rsData = e.getRsData();
-      response.setContentType("application/json;charset=UTF-8");
-      response.setStatus(rsData.statusCode());
-      response.getWriter().write(
-          Ut.json.toString(rsData)
-      );
-    }
-  }
-
-  //엑세스 토큰이 유효한지 확인하고, 인증된 사용자 정보를 SecurityContextHolder에 저장하는 메소드
-  private void work(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
-    // API 요청이 아니라면 패스
-    //api는 꼭 붙이는게 좋다. h2 스웨거 같은거 걸러야 할 때
-//    if (!request.getRequestURI().startsWith("/api/")) {
-//      filterChain.doFilter(request, response);
-//      return;
-//    }
-
-    //인증, 인가가 필요없는 API 요청이라면 패스
-    //여기까진 모든 필터에서 적용되는 부분. 로그인을 했냐 안했냐로 시점이 나뉨
-    //로그인을 안했으면 이 밑으로는 진행이 안됨.
-    //로그인 url로 요청 들어온거면 토큰 검사확인 불필요
-    if (request.getRequestURI().startsWith("/oauth2/authorization/") || request.getRequestURI()
-        .startsWith("/login/oauth2/code/")) {
+  protected void doFilterInternal(
+      HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull FilterChain filterChain
+  ) throws ServletException, IOException {
+    log.debug("Processing request for {}", request.getRequestURI());
+    if (isOAuth2LoginProcessURI(request.getRequestURI())) {
       filterChain.doFilter(request, response);
       return;
     }
 
-    String refreshToken;
-    String accessToken;
-
-    String headerAuthorization = rq.getHeader("Authorization", "");
-
-    if (!headerAuthorization.isBlank()) {
-      if (!headerAuthorization.startsWith("Bearer ")) {
-        throw new ServiceException("401-2", "Authorization 헤더가 Bearer 형식이 아닙니다.");
-      }
-
-      String[] headerAuthorizationBits = headerAuthorization.split(" ", 3);
-
-      refreshToken = headerAuthorizationBits[1];
-      accessToken = headerAuthorizationBits.length == 3 ? headerAuthorizationBits[2] : "";
-    } else {
-      refreshToken = rq.getCookieValue("refreshToken", "");
-      accessToken = rq.getCookieValue("accessToken", "");
-    }
-
-    logger.debug("refreshToken : " + refreshToken);
-    logger.debug("accessToken : " + accessToken);
+    String refreshToken = CookieUtil.getCookieValue(request, "refreshToken");
+    String accessToken = CookieUtil.getCookieValue(request, "accessToken");
 
     boolean isRefreshTokenExists = !refreshToken.isBlank();
     boolean isAccessTokenExists = !accessToken.isBlank();
@@ -119,9 +75,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     if (isAccessTokenExists && !isAccessTokenValid) {
       String actorAccessToken = authTokenService.genAccessToken(user);
-
       CookieUtil.addCookie(response, "accessToken", actorAccessToken, -1);
-      rq.setHeader("Authorization", actorAccessToken);
     }
 
     //이제 이 사용자는 인증된 사용자이다. 다만 우리 db에서 꺼낸게 아닌 사용자가 준 토큰에서 꺼낸 정보로 이루어짐.
@@ -147,5 +101,10 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         .setAuthentication(authentication);
 
     filterChain.doFilter(request, response);
+  }
+
+  private boolean isOAuth2LoginProcessURI(String requestURI) {
+    return requestURI.startsWith("/oauth2/authorization/") ||
+        requestURI.startsWith("/login/oauth2/code/");
   }
 }

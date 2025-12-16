@@ -41,14 +41,13 @@ public final class CookieUtil {
     addCookie(response, name, "", 0);
   }
 
-  public static Optional<String> getCookieValue(HttpServletRequest request, String name) {
+  public static String getCookieValue(HttpServletRequest request, String name) {
     return Optional.ofNullable(request.getCookies())
         .flatMap(cookies ->
             Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(name))
                 .map(Cookie::getValue)
-                .filter(value -> !value.isBlank())
                 .findFirst()
-        );
+        ).orElse(null);
   }
 }
