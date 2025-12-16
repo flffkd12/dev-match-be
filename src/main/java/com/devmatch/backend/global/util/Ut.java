@@ -1,5 +1,7 @@
 package com.devmatch.backend.global.util;
 
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ClaimsBuilder;
@@ -47,11 +49,10 @@ public class Ut {
             .verifyWith(secretKey)
             .build()
             .parse(jwtStr);
+        return true;
       } catch (Exception e) {
-        return false;
+        throw new CustomException(ErrorCode.INVALID_TOKEN);
       }
-
-      return true;
     }
 
     public static Map<String, Object> payload(String secret, String jwtStr) {

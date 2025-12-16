@@ -3,7 +3,6 @@ package com.devmatch.backend.global.rq;
 import com.devmatch.backend.domain.auth.security.SecurityUser;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Rq {
 
-  private final HttpServletRequest req;
   private final UserService userService;
 
   public User getActor() {

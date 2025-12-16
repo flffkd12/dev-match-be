@@ -16,7 +16,7 @@ public class AuthTokenService {
   private int accessTokenExpirationSeconds;
 
   public String genAccessToken(User user) {
-    long id = user.getId();
+    Long id = user.getId();
     String username = user.getOauthId();//롬복
     String name = user.getNickname();//닉네임 가져오는 메서드
 
@@ -27,17 +27,21 @@ public class AuthTokenService {
     );
   }
 
-  public Map<String, Object> payload(String accessToken) {
+  public Map<String, Object> getPayload(String accessToken) {
     Map<String, Object> parsedPayload = Ut.jwt.payload(jwtSecretKey, accessToken);
 
     if (parsedPayload == null) {
       return null;
     }
 
-    int id = (int) parsedPayload.get("id");
+    Long id = (Long) parsedPayload.get("id");
     String username = (String) parsedPayload.get("username");
     String name = (String) parsedPayload.get("name");
 
     return Map.of("id", id, "username", username, "name", name);
+  }
+
+  public boolean isTokenValid(String token) {
+    return Ut.jwt.isValid(jwtSecretKey, token);
   }
 }
