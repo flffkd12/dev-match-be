@@ -40,8 +40,4 @@ public class AuthTokenService {
 
     return Map.of("id", id, "username", username, "name", name);
   }
-
-  public boolean isTokenValid(String token) {
-    return Ut.jwt.isValid(jwtSecretKey, token);
-  }
 }

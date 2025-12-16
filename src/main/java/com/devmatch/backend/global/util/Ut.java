@@ -1,13 +1,10 @@
 package com.devmatch.backend.global.util;
 
-import com.devmatch.backend.global.exception.CustomException;
-import com.devmatch.backend.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 import javax.crypto.SecretKey;
@@ -15,6 +12,10 @@ import javax.crypto.SecretKey;
 public class Ut {
 
   public static class jwt {
+
+    private static SecretKey getSecretKey(String secret) {
+      return Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public static String toString(String secret, int expireSeconds, Map<String, Object> body) {
       ClaimsBuilder claimsBuilder = Jwts.claims();
@@ -28,50 +29,30 @@ public class Ut {
       Date issuedAt = new Date();
       Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
 
-      Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-
-      String jwt = Jwts.builder()
+      return Jwts.builder()
           .claims(claims)
           .issuedAt(issuedAt)
           .expiration(expiration)
-          .signWith(secretKey)
+          .signWith(getSecretKey(secret))
           .compact();
-
-      return jwt;
-    }
-
-    public static boolean isValid(String secret, String jwtStr) {
-      SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-
-      try {
-        Jwts
-            .parser()
-            .verifyWith(secretKey)
-            .build()
-            .parse(jwtStr);
-        return true;
-      } catch (Exception e) {
-        throw new CustomException(ErrorCode.INVALID_TOKEN);
-      }
     }
 
     public static Map<String, Object> payload(String secret, String jwtStr) {
-      SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+      return getClaims(secret, jwtStr);
+    }
 
-      try {
-        return (Map<String, Object>) Jwts
-            .parser()
-            .verifyWith(secretKey)
-            .build()
-            .parse(jwtStr)
-            .getPayload();
-      } catch (Exception e) {
-        return null;
-      }
+    private static Claims getClaims(String secret, String jwtStr) {
+      return Jwts
+          .parser()
+          .verifyWith(getSecretKey(secret))
+          .build()
+          .parseSignedClaims(jwtStr)
+          .getPayload();
     }
   }
 
   public static class json {
+
 
     public static ObjectMapper objectMapper;
 

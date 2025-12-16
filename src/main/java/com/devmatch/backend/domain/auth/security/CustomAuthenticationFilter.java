@@ -6,6 +6,7 @@ import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
 import com.devmatch.backend.global.util.CookieUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,12 +46,14 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     String accessToken = CookieUtil.getCookieValue(request, "accessToken");
     if (accessToken != null) {
-      if (!authTokenService.isTokenValid(accessToken)) {
+      try {
+        Map<String, Object> payload = authTokenService.getPayload(accessToken);
+        setAuthenticationContext(userService.getUser((Long) payload.get("id")));
+      } catch (ExpiredJwtException e) {
+        throw new CustomException(ErrorCode.EXPIRED_TOKEN);
+      } catch (Exception e) {
         throw new CustomException(ErrorCode.INVALID_TOKEN);
       }
-
-      Map<String, Object> payload = authTokenService.getPayload(accessToken);
-      setAuthenticationContext(userService.getUser((Long) payload.get("id")));
     }
 
     filterChain.doFilter(request, response);
