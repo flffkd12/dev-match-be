@@ -1,13 +1,18 @@
 package com.devmatch.backend.domain.auth.service;
 
 import com.devmatch.backend.domain.user.entity.User;
+import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.util.Ut;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthTokenService {
+
+  private final UserService userService;
 
   @Value("${custom.jwt.secretKey}")
   private String jwtSecretKey;

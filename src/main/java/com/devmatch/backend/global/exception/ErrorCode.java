@@ -12,8 +12,10 @@ public enum ErrorCode {
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-404", "사용자를 찾을 수 없습니다."),
 
   // 인증 관련 오류
-  INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-INVALID", "유효하지 않은 토큰입니다."),
-  EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-EXPIRED", "토큰이 만료되었습니다."),
+  INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-INVALID-ACCESS",
+      "유효하지 않은 엑세스 토큰입니다. 다시 로그인 해주세요."),
+  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-INVALID-REFRESH",
+      "유효하지 않은 리프레시 토큰입니다. 다시 로그인 해주세요."),
 
   // 공통 오류
   CLIENT_ERROR(HttpStatus.BAD_REQUEST, "CLIENT-400", "올바르지 않은 요청입니다."),

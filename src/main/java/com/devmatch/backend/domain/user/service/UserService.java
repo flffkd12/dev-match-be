@@ -29,7 +29,7 @@ public class UserService {
 
   public User getUserByRefreshToken(String refreshToken) {
     return userRepository.findByRefreshToken(refreshToken)
-        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
   }
 
   public long count() {
