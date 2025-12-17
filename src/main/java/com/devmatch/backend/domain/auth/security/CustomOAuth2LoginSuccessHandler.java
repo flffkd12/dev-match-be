@@ -1,5 +1,6 @@
 package com.devmatch.backend.domain.auth.security;
 
+import com.devmatch.backend.domain.auth.enums.Token;
 import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
@@ -39,8 +40,8 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
     String accessToken = authTokenService.genAccessToken(user);
     log.debug("Access token generated for user {}", user.getId());
 
-    CookieUtil.addCookie(response, "refreshToken", user.getRefreshToken());
-    CookieUtil.addCookie(response, "accessToken", accessToken, -1);
+    CookieUtil.addCookie(response, Token.REFRESH_TOKEN.getName(), user.getRefreshToken());
+    CookieUtil.addCookie(response, Token.ACCESS_TOKEN.getName(), accessToken, -1);
     log.debug("Refresh and access tokens set as cookies for user {}", user.getId());
 
     String encodedState = request.getParameter("state");

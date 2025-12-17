@@ -1,5 +1,6 @@
 package com.devmatch.backend.domain.auth.security;
 
+import com.devmatch.backend.domain.auth.enums.Token;
 import com.devmatch.backend.domain.auth.service.AuthTokenService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
@@ -44,15 +45,15 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
       return;
     }
 
-    String accessToken = CookieUtil.getCookieValue(request, "accessToken");
+    String accessToken = CookieUtil.getCookieValue(request, Token.ACCESS_TOKEN.getName());
     if (accessToken != null) {
       try {
         Map<String, Object> payload = authTokenService.getPayload(accessToken);
         setAuthenticationContext(userService.getUser((Long) payload.get("id")));
       } catch (ExpiredJwtException e) {
-        String refreshToken = CookieUtil.getCookieValue(request, "refreshToken");
+        String refreshToken = CookieUtil.getCookieValue(request, Token.REFRESH_TOKEN.getName());
         User user = userService.getUserByRefreshToken(refreshToken);
-        CookieUtil.addCookie(response, "accessToken", authTokenService.genAccessToken(user));
+        CookieUtil.addCookie(response, Token.ACCESS_TOKEN.getName(), authTokenService.genAccessToken(user));
         setAuthenticationContext(user);
       } catch (Exception e) {
         log.error("Invalid access token stack trace: ", e);
