@@ -1,4 +1,4 @@
-package com.devmatch.backend.global.util;
+package com.devmatch.backend.domain.auth.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.auth.service;
 
+import com.devmatch.backend.domain.auth.jwt.JwtProcessor;
 import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.global.util.JwtProcessor;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
