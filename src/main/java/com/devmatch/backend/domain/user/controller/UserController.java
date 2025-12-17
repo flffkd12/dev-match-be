@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.user.controller;
 
 import com.devmatch.backend.domain.auth.security.SecurityUser;
-import com.devmatch.backend.domain.user.entity.User;
+import com.devmatch.backend.domain.user.dto.UserResponse;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.response.ApiResponse;
 import com.devmatch.backend.global.response.SuccessCode;
@@ -20,10 +20,10 @@ public class UserController {
   private final UserService userService;
 
   @GetMapping("/profile")
-  public ResponseEntity<ApiResponse<User>> getCurrentUser(
+  public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
-    User user = userService.getUser(securityUser.getUserId());
+    UserResponse user = userService.getUserResponse(securityUser.getUserId());
     return ApiResponse.success(SuccessCode.USER_FETCH, user);
   }
 }

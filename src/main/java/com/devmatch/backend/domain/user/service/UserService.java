@@ -1,5 +1,6 @@
 package com.devmatch.backend.domain.user.service;
 
+import com.devmatch.backend.domain.user.dto.UserResponse;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.repository.UserRepository;
 import com.devmatch.backend.global.exception.CustomException;
@@ -20,6 +21,10 @@ public class UserService {
     User user = findByOauthId(oauthId);
     return user == null ? join(oauthId, nickname, profileImgUrl)
         : user.modify(nickname, profileImgUrl);
+  }
+
+  public UserResponse getUserResponse(Long userId) {
+    return UserResponse.from(getUser(userId));
   }
 
   public User getUser(Long userId) {
