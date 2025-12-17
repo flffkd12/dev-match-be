@@ -13,21 +13,17 @@ public class AuthTokenService {
   private final JwtProcessor jwtProcessor;
 
   public String genAccessToken(User user) {
-    return jwtProcessor.createToken(
-        Map.of("userId", user.getId(), "nickname", user.getNickname())
+    return jwtProcessor.createToken(Map.of(
+        "userId", user.getId(),
+        "nickname", user.getNickname())
     );
   }
 
   public Map<String, Object> getPayload(String accessToken) {
-    Map<String, Object> parsedPayload = jwtProcessor.getPayload(accessToken);
-
-    if (parsedPayload == null) {
-      return null;
-    }
-
-    Long id = ((Number) parsedPayload.get("id")).longValue();
-    String nickname = (String) parsedPayload.get("nickname");
-
-    return Map.of("userId", id, "nickname", nickname);
+    Map<String, Object> claims = jwtProcessor.getPayload(accessToken);
+    return Map.of(
+        "userId", ((Number) claims.get("userId")).longValue(),
+        "nickname", claims.get("nickname")
+    );
   }
 }
