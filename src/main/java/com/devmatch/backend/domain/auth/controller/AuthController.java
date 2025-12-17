@@ -19,6 +19,6 @@ public class AuthController {
     CookieUtil.deleteCookie(response, Token.REFRESH_TOKEN.getName());
     CookieUtil.deleteCookie(response, Token.ACCESS_TOKEN.getName());
 
-    return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS);
+    return ApiResponse.success(SuccessCode.AUTH_LOGOUT);
   }
 }

@@ -13,6 +13,7 @@ import com.devmatch.backend.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,6 +46,14 @@ public class ProjectController {
   public ResponseEntity<ApiResponse<List<ProjectDetailResponse>>> getAll() {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 전체 조회 성공",
         projectService.getProjects()));
+  }
+
+  @GetMapping("/my")
+  public ResponseEntity<List<ProjectDetailResponse>> getMyProjects(
+      @AuthenticationPrincipal SecurityUser securityUser
+  ) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(projectService.getProjectsByUserId(securityUser.getUserId()));
   }
 
   @GetMapping("/{id}")
