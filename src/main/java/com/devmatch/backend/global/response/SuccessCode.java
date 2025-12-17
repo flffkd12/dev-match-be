@@ -1,4 +1,4 @@
-package com.devmatch.backend.global.success;
+package com.devmatch.backend.global.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

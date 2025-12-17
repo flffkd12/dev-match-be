@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.auth.controller;
 
 import com.devmatch.backend.global.response.ApiResponse;
-import com.devmatch.backend.global.success.SuccessCode;
+import com.devmatch.backend.global.response.SuccessCode;
 import com.devmatch.backend.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

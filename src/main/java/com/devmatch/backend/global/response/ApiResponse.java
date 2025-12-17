@@ -1,6 +1,5 @@
 package com.devmatch.backend.global.response;
 
-import com.devmatch.backend.global.success.SuccessCode;
 import lombok.Builder;
 import org.springframework.http.ResponseEntity;
 
