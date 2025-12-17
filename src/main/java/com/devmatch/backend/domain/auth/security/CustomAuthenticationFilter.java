@@ -51,10 +51,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         Map<String, Object> payload = authTokenService.getPayload(accessToken);
         setAuthenticationContext(userService.getUser((Long) payload.get("userId")));
       } catch (ExpiredJwtException e) {
-        String refreshToken = CookieUtil.getCookieValue(request, Token.REFRESH_TOKEN.getName());
-        User user = userService.getUserByRefreshToken(refreshToken);
-        CookieUtil.addCookie(response, Token.ACCESS_TOKEN.getName(), authTokenService.genAccessToken(user));
-        setAuthenticationContext(user);
+        handleExpiredAccessToken(request, response);
       } catch (Exception e) {
         log.error("Invalid access token stack trace: ", e);
         throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
@@ -77,5 +74,13 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         authUser.getAuthorities()
     );
     SecurityContextHolder.getContext().setAuthentication(authentication);
+  }
+
+  private void handleExpiredAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    String refreshToken = CookieUtil.getCookieValue(request, Token.REFRESH_TOKEN.getName());
+    User user = userService.getUserByRefreshToken(refreshToken);
+    CookieUtil.addCookie(response, Token.ACCESS_TOKEN.getName(),
+        authTokenService.genAccessToken(user));
+    setAuthenticationContext(user);
   }
 }
