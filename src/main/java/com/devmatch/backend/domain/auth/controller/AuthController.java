@@ -1,9 +1,10 @@
 package com.devmatch.backend.domain.auth.controller;
 
-import com.devmatch.backend.global.RsData;
+import com.devmatch.backend.global.response.ApiResponse;
+import com.devmatch.backend.global.success.SuccessCode;
 import com.devmatch.backend.global.util.CookieUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   @DeleteMapping("/logout")
-  public RsData<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
     CookieUtil.deleteCookie(response, "refreshToken");
     CookieUtil.deleteCookie(response, "accessToken");
 
-    return new RsData<>("200-1", "로그아웃 되었습니다.");
+    return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS);
   }
 }

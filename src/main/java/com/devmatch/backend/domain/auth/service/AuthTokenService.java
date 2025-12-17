@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.auth.service;
 
 import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.global.util.Ut;
+import com.devmatch.backend.global.util.JwtUtil;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ public class AuthTokenService {
     String username = user.getOauthId();//롬복
     String name = user.getNickname();//닉네임 가져오는 메서드
 
-    return Ut.jwt.toString(
+    return JwtUtil.toString(
         jwtSecretKey,
         accessTokenExpirationSeconds,
         Map.of("id", id, "username", username, "name", name)
@@ -30,7 +30,7 @@ public class AuthTokenService {
   }
 
   public Map<String, Object> getPayload(String accessToken) {
-    Map<String, Object> parsedPayload = Ut.jwt.payload(jwtSecretKey, accessToken);
+    Map<String, Object> parsedPayload = JwtUtil.payload(jwtSecretKey, accessToken);
 
     if (parsedPayload == null) {
       return null;
