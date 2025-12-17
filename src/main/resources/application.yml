@@ -47,8 +47,7 @@ management:
 
 custom:
   jwt:
-    secretKey: ${CUSTOM__JWT__SECRET_KEY}
-  accessToken:
+    secret: ${CUSTOM__JWT__SECRET}
     expirationSeconds: "#{60*20}"
 
 logging:

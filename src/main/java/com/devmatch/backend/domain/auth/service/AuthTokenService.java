@@ -1,36 +1,29 @@
 package com.devmatch.backend.domain.auth.service;
 
 import com.devmatch.backend.domain.user.entity.User;
-import com.devmatch.backend.global.util.JwtUtil;
+import com.devmatch.backend.global.util.JwtProcessor;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthTokenService {
 
-  @Value("${custom.jwt.secretKey}")
-  private String jwtSecretKey;
-
-  @Value("${custom.accessToken.expirationSeconds}")
-  private int accessTokenExpirationSeconds;
+  private final JwtProcessor jwtProcessor;
 
   public String genAccessToken(User user) {
     Long id = user.getId();
-    String username = user.getOauthId();//롬복
-    String name = user.getNickname();//닉네임 가져오는 메서드
+    String username = user.getOauthId();
+    String name = user.getNickname();
 
-    return JwtUtil.toString(
-        jwtSecretKey,
-        accessTokenExpirationSeconds,
+    return jwtProcessor.createToken(
         Map.of("id", id, "username", username, "name", name)
     );
   }
 
   public Map<String, Object> getPayload(String accessToken) {
-    Map<String, Object> parsedPayload = JwtUtil.payload(jwtSecretKey, accessToken);
+    Map<String, Object> parsedPayload = jwtProcessor.getPayload(accessToken);
 
     if (parsedPayload == null) {
       return null;
