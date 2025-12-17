@@ -1,4 +1,4 @@
-package com.devmatch.backend.global.app;
+package com.devmatch.backend.global.config;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
