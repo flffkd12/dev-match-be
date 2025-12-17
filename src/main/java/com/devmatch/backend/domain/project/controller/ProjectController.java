@@ -9,7 +9,7 @@ import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
 import com.devmatch.backend.domain.project.dto.ProjectStatusUpdateRequest;
 import com.devmatch.backend.domain.project.service.ProjectService;
-import com.devmatch.backend.global.ApiResponse;
+import com.devmatch.backend.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

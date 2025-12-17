@@ -1,4 +1,4 @@
-package com.devmatch.backend.global;
+package com.devmatch.backend.global.response;
 
 import lombok.Builder;
 

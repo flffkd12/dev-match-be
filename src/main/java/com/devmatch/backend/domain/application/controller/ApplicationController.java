@@ -3,7 +3,7 @@ package com.devmatch.backend.domain.application.controller;
 import com.devmatch.backend.domain.application.dto.request.ApplicationStatusUpdateRequestDto;
 import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
 import com.devmatch.backend.domain.application.service.ApplicationService;
-import com.devmatch.backend.global.ApiResponse;
+import com.devmatch.backend.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

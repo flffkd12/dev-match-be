@@ -1,6 +1,6 @@
 package com.devmatch.backend.global.exception;
 
-import com.devmatch.backend.global.ApiResponse;
+import com.devmatch.backend.global.response.ApiResponse;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -2,7 +2,7 @@ package com.devmatch.backend.domain.analysis.controller;
 
 import com.devmatch.backend.domain.analysis.dto.AnalysisResultResponse;
 import com.devmatch.backend.domain.analysis.service.AnalysisService;
-import com.devmatch.backend.global.ApiResponse;
+import com.devmatch.backend.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
