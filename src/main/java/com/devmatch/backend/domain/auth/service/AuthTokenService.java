@@ -13,12 +13,8 @@ public class AuthTokenService {
   private final JwtProcessor jwtProcessor;
 
   public String genAccessToken(User user) {
-    Long id = user.getId();
-    String username = user.getOauthId();
-    String name = user.getNickname();
-
     return jwtProcessor.createToken(
-        Map.of("id", id, "username", username, "name", name)
+        Map.of("userId", user.getId(), "nickname", user.getNickname())
     );
   }
 
@@ -30,9 +26,8 @@ public class AuthTokenService {
     }
 
     Long id = ((Number) parsedPayload.get("id")).longValue();
-    String username = (String) parsedPayload.get("username");
-    String name = (String) parsedPayload.get("name");
+    String nickname = (String) parsedPayload.get("nickname");
 
-    return Map.of("id", id, "username", username, "name", name);
+    return Map.of("userId", id, "nickname", nickname);
   }
 }

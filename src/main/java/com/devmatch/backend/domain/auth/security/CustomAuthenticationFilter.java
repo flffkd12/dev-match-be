@@ -49,7 +49,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     if (accessToken != null) {
       try {
         Map<String, Object> payload = authTokenService.getPayload(accessToken);
-        setAuthenticationContext(userService.getUser((Long) payload.get("id")));
+        setAuthenticationContext(userService.getUser((Long) payload.get("userId")));
       } catch (ExpiredJwtException e) {
         String refreshToken = CookieUtil.getCookieValue(request, Token.REFRESH_TOKEN.getName());
         User user = userService.getUserByRefreshToken(refreshToken);
