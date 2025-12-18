@@ -39,7 +39,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
-    log.debug("Processing request for {}", request.getRequestURI());
+    log.debug("Request Info: URI=[{}], Method=[{}], DispatcherType=[{}]",
+        request.getRequestURI(), request.getMethod(), request.getDispatcherType());
+
     if (isOAuth2LoginProcessURI(request.getRequestURI())) {
       filterChain.doFilter(request, response);
       return;

@@ -29,16 +29,28 @@ public class SecurityConfig {
   private final CustomOAuth2LoginFailureHandler customOAuth2LoginFailureHandler;
   private final HandlerExceptionResolver handlerExceptionResolver;
 
+  private static final String[] PERMIT_URI_LIST = {
+      "/",
+      "/error",
+      "/favicon.ico",
+      "/h2-console/**",
+      "/.well-known/**"
+  };
+
+  private static final String[] AUTH_NEEDED_URI_LIST = {
+      "/analysis/**",
+      "/applications/**",
+      "/projects/**",
+      "/users/**"
+  };
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
         .authorizeHttpRequests(
             auth -> auth
-                .requestMatchers("/favicon.ico", "/h2-console/**", "/").permitAll()
-                .requestMatchers("/users/**").authenticated()
-                .requestMatchers("/projects/**").authenticated()
-                .requestMatchers("/analysis/**").authenticated()
-                .requestMatchers("/applications/**").authenticated()
+                .requestMatchers(PERMIT_URI_LIST).permitAll()
+                .requestMatchers(AUTH_NEEDED_URI_LIST).authenticated()
                 .anyRequest().denyAll()
         )
         .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
