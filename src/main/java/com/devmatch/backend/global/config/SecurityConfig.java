@@ -40,6 +40,7 @@ public class SecurityConfig {
   private static final String[] AUTH_NEEDED_URI_LIST = {
       "/analysis/**",
       "/applications/**",
+      "/auth/logout",
       "/projects/**",
       "/users/**"
   };
