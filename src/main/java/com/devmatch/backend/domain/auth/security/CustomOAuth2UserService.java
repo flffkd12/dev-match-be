@@ -26,8 +26,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   @Transactional
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2User oAuth2User = super.loadUser(userRequest);
-
-    log.info("OAuth2User Attributes: {}", oAuth2User.getAttributes());
+    log.debug("OAuth2User Attributes: {}", oAuth2User.getAttributes());
 
     OAuthProvider oAuthProvider = OAuthProvider.valueOf(
         userRequest.getClientRegistration().getRegistrationId().toUpperCase());
