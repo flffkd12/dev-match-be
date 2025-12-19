@@ -29,9 +29,11 @@ public class Project extends BaseEntity {
   private String title;
   private String description;
   private String techStack;
+  private String roleAssignment;
 
   private Integer teamSize;
   private Integer currentTeamSize;
+  private Integer durationWeeks;
 
   @ManyToOne
   private User creator;
@@ -39,8 +41,6 @@ public class Project extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private ProjectStatus status;
 
-  private String content;
-  private Integer durationWeeks;
 
   @OneToMany(mappedBy = "project", fetch = LAZY, orphanRemoval = true)
   private List<Application> applications;
@@ -60,7 +60,7 @@ public class Project extends BaseEntity {
     this.creator = creator;
     this.status = ProjectStatus.RECRUITING;
     this.currentTeamSize = 0;
-    this.content = "";
+    this.roleAssignment = "";
     this.durationWeeks = durationWeeks;
   }
 
@@ -91,7 +91,7 @@ public class Project extends BaseEntity {
     }
   }
 
-  public void changeContent(String content) {
-    this.content = content;
+  public void changeContent(String roleAssignment) {
+    this.roleAssignment = roleAssignment;
   }
 }

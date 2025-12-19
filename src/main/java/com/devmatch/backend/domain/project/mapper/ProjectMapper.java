@@ -16,7 +16,7 @@ public class ProjectMapper {
         project.getCurrentTeamSize(),
         project.getCreator().getNickname(),
         project.getStatus().name(),
-        project.getContent(),
+        project.getRoleAssignment(),
         project.getDurationWeeks(),
         project.getCreatedAt()
     );
