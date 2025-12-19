@@ -20,7 +20,7 @@ spring:
             client-secret: ${SPRING__SECURITY__OAUTH2__CLIENT__REGISTRATION__GOOGLE__CLIENT_SECRET}
             scope: profile
             client-name: Google
-            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}' #사용자가 구글에서 로그인을 성공적으로 마치고 동의 절차를 완료했을 때, 구글이 사용자를 다시 돌려보낼 애플리케이션의 경로
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -52,6 +52,7 @@ custom:
 
 logging:
   level:
+    com.devmatch.backend: DEBUG
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
     org.springframework.http: DEBUG
