@@ -2,9 +2,9 @@ package com.devmatch.backend.domain.application.entity;
 
 import com.devmatch.backend.domain.analysis.entity.AnalysisResult;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
-import com.devmatch.backend.domain.common.entity.BaseEntity;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.user.entity.User;
+import com.devmatch.backend.global.common.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

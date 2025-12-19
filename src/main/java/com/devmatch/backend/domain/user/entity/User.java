@@ -1,6 +1,6 @@
 package com.devmatch.backend.domain.user.entity;
 
-import com.devmatch.backend.domain.common.entity.BaseEntity;
+import com.devmatch.backend.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
