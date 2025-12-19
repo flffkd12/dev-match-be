@@ -1,13 +1,13 @@
 package com.devmatch.backend.domain.project.mapper;
 
-import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
+import com.devmatch.backend.domain.project.dto.ProjectResponse;
 import com.devmatch.backend.domain.project.entity.Project;
 import java.util.Arrays;
 
 public class ProjectMapper {
 
-  public static ProjectDetailResponse toProjectDetailResponse(Project project) {
-    return new ProjectDetailResponse(
+  public static ProjectResponse toProjectDetailResponse(Project project) {
+    return new ProjectResponse(
         project.getId(),
         project.getTitle(),
         project.getDescription(),

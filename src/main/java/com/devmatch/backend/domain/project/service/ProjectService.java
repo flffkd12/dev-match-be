@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.project.service;
 
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
-import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
+import com.devmatch.backend.domain.project.dto.ProjectResponse;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.project.mapper.ProjectMapper;
@@ -21,7 +21,7 @@ public class ProjectService {
   private final ProjectRepository projectRepository;
 
   @Transactional
-  public ProjectDetailResponse createProject(
+  public ProjectResponse createProject(
       Long userId,
       ProjectCreateRequest projectCreateRequest
   ) {
@@ -42,7 +42,7 @@ public class ProjectService {
   }
 
   @Transactional(readOnly = true)
-  public List<ProjectDetailResponse> getProjects() {
+  public List<ProjectResponse> getProjects() {
     return projectRepository.findAll()
         .stream()
         .map(ProjectMapper::toProjectDetailResponse)
@@ -50,7 +50,7 @@ public class ProjectService {
   }
 
   @Transactional(readOnly = true)
-  public List<ProjectDetailResponse> getProjectsByUserId(Long userId) {
+  public List<ProjectResponse> getProjectsByUserId(Long userId) {
     return projectRepository.findAllByCreatorId(userId)
         .stream()
         .map(ProjectMapper::toProjectDetailResponse)
@@ -58,12 +58,12 @@ public class ProjectService {
   }
 
   @Transactional(readOnly = true)
-  public ProjectDetailResponse getProjectDetail(Long projectId) {
+  public ProjectResponse getProjectDetail(Long projectId) {
     return ProjectMapper.toProjectDetailResponse(getProject(projectId));
   }
 
   @Transactional
-  public ProjectDetailResponse modifyStatus(Long projectId, ProjectStatus status) {
+  public ProjectResponse modifyStatus(Long projectId, ProjectStatus status) {
     Project project = getProject(projectId);
     project.changeStatus(status);
 
@@ -71,7 +71,7 @@ public class ProjectService {
   }
 
   @Transactional
-  public ProjectDetailResponse modifyContent(Long projectId, String content) {
+  public ProjectResponse modifyContent(Long projectId, String content) {
     Project project = getProject(projectId);
     project.changeContent(content);
 

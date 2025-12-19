@@ -6,7 +6,7 @@ import com.devmatch.backend.domain.auth.security.SecurityUser;
 import com.devmatch.backend.domain.project.dto.ProjectApplyRequest;
 import com.devmatch.backend.domain.project.dto.ProjectContentUpdateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
-import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
+import com.devmatch.backend.domain.project.dto.ProjectResponse;
 import com.devmatch.backend.domain.project.dto.ProjectStatusUpdateRequest;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.response.ApiResponse;
@@ -34,7 +34,7 @@ public class ProjectController {
   private final ApplicationService applicationService;
 
   @PostMapping
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> create(
+  public ResponseEntity<ApiResponse<ProjectResponse>> create(
       @Valid @RequestBody ProjectCreateRequest projectCreateRequest,
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
@@ -43,13 +43,13 @@ public class ProjectController {
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<ProjectDetailResponse>>> getAll() {
+  public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAll() {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 전체 조회 성공",
         projectService.getProjects()));
   }
 
   @GetMapping("/my")
-  public ResponseEntity<List<ProjectDetailResponse>> getMyProjects(
+  public ResponseEntity<List<ProjectResponse>> getMyProjects(
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
     return ResponseEntity.status(HttpStatus.OK)
@@ -57,13 +57,13 @@ public class ProjectController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> get(@PathVariable Long id) {
+  public ResponseEntity<ApiResponse<ProjectResponse>> get(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 단일 조회 성공",
         projectService.getProjectDetail(id)));
   }
 
   @PatchMapping("/{id}/status")
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> modifyStatus(
+  public ResponseEntity<ApiResponse<ProjectResponse>> modifyStatus(
       @PathVariable Long id,
       @Valid @RequestBody ProjectStatusUpdateRequest projectStatusUpdateRequest
   ) {
@@ -72,7 +72,7 @@ public class ProjectController {
   }
 
   @PatchMapping("/{id}/content")
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> modifyContent(
+  public ResponseEntity<ApiResponse<ProjectResponse>> modifyContent(
       @PathVariable Long id,
       @Valid @RequestBody ProjectContentUpdateRequest projectContentUpdateRequest
   ) {

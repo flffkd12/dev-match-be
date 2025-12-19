@@ -3,7 +3,7 @@ package com.devmatch.backend.domain.project.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ProjectDetailResponse(
+public record ProjectResponse(
     Long id,
     String title,
     String description,
