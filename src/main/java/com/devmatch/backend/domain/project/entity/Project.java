@@ -13,9 +13,11 @@ import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @NoArgsConstructor
@@ -41,6 +43,8 @@ public class Project extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private ProjectStatus status;
 
+  @LastModifiedDate
+  private LocalDateTime updatedAt;
 
   @OneToMany(mappedBy = "project", fetch = LAZY, orphanRemoval = true)
   private List<Application> applications;

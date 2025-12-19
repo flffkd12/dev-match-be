@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectService {
 
   private final UserService userService;
-
   private final ProjectRepository projectRepository;
 
   @Transactional
