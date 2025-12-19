@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.common.entity.BaseEntity;
+import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,4 +1,4 @@
-package com.devmatch.backend.domain.project.entity;
+package com.devmatch.backend.domain.project.enums;
 
 public enum ProjectStatus {
   RECRUITING,
