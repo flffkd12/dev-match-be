@@ -4,9 +4,15 @@ import static jakarta.persistence.FetchType.LAZY;
 
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
+import com.devmatch.backend.domain.common.entity.BaseEntity;
 import com.devmatch.backend.domain.user.entity.User;
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Index;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +24,7 @@ import lombok.NoArgsConstructor;
     name = "projects",
     indexes = {@Index(name = "idx_creator_id", columnList = "creator_id")}
 )
-public class Project {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+public class Project extends BaseEntity {
 
   private String title;
   private String description;
@@ -32,7 +34,6 @@ public class Project {
   private Integer currentTeamSize;
 
   @ManyToOne
-  @JoinColumn(name = "creator_id")
   private User creator;
 
   @Enumerated(EnumType.STRING)
@@ -40,7 +41,6 @@ public class Project {
 
   private String content;
   private Integer durationWeeks;
-  private LocalDateTime createdAt;
 
   @OneToMany(mappedBy = "project", fetch = LAZY, orphanRemoval = true)
   private List<Application> applications;
@@ -62,7 +62,6 @@ public class Project {
     this.currentTeamSize = 0;
     this.content = "";
     this.durationWeeks = durationWeeks;
-    this.createdAt = LocalDateTime.now();
   }
 
   public void changeStatus(ProjectStatus newStatus) {

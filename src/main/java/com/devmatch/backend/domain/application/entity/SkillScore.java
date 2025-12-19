@@ -1,11 +1,9 @@
 package com.devmatch.backend.domain.application.entity;
 
+import com.devmatch.backend.domain.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -17,13 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(name = "skill_scores")
-public class SkillScore {
-
-  // 각 기술점수 기록을 구분하는 유일한 번호
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+public class SkillScore extends BaseEntity {
 
   // 이 기술점수가 속한 지원서의 고유 식별자
   @ManyToOne(fetch = FetchType.LAZY)

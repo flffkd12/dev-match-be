@@ -20,7 +20,7 @@ public record ApplicationDetailResponseDto(
         application.getId(),
         application.getUser().getNickname(),
         application.getStatus(),
-        application.getAppliedAt(),
+        application.getCreatedAt(),
         application.getSkillScore().stream()
             .map(SkillScore::getTechName)
             .toList(),

@@ -2,44 +2,31 @@ package com.devmatch.backend.domain.application.entity;
 
 import com.devmatch.backend.domain.analysis.entity.AnalysisResult;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
+import com.devmatch.backend.domain.common.entity.BaseEntity;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(name = "applications")
-@EntityListeners(AuditingEntityListener.class)
-public class Application {
-
-  // 각 지원서를 구분하는 유일한 번호
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+public class Application extends BaseEntity {
 
   // 이 지원서를 작성한 지원자의 고유 식별자
   @ManyToOne(fetch = FetchType.EAGER)
@@ -55,10 +42,6 @@ public class Application {
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
   private ApplicationStatus status = ApplicationStatus.PENDING;
-
-  // 지원 일시
-  @CreatedDate
-  private LocalDateTime appliedAt;
 
   // 지원자의 기술별 점수 저장
   @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -86,7 +69,8 @@ public class Application {
   public void setAnalysisResult(AnalysisResult analysisResult) {
     if (this.analysisResult != null) {
       throw new IllegalArgumentException(
-          "현재 지원서(지원서 %s번)에 분석 결과가(분석 결과 %s번) 이미 존재합니다".formatted(this.id, analysisResult.getId()));
+          "현재 지원서(지원서 %s번)에 분석 결과가(분석 결과 %s번) 이미 존재합니다".formatted(this.getId(),
+              analysisResult.getId()));
     }
     this.analysisResult = analysisResult;
   }

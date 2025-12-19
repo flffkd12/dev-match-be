@@ -1,11 +1,8 @@
 package com.devmatch.backend.domain.user.entity;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-
+import com.devmatch.backend.domain.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,11 +16,7 @@ import org.springframework.util.StringUtils;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor
-public class User {
-
-  @Id
-  @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+public class User extends BaseEntity {
 
   @Column(unique = true)
   private String oauthId;
