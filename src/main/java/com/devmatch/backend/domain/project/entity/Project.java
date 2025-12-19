@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -49,6 +50,7 @@ public class Project extends BaseEntity {
   @OneToMany(mappedBy = "project", fetch = LAZY, orphanRemoval = true)
   private List<Application> applications;
 
+  @Builder
   public Project(
       String title,
       String description,

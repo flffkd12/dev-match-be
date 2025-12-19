@@ -29,14 +29,14 @@ public class ProjectService {
       throw new IllegalArgumentException("기술 스택 기재 형식이 올바르지 않습니다. \", \"로 구분해주세요");
     }
 
-    Project project = new Project(
-        projectCreateRequest.title(),
-        projectCreateRequest.description(),
-        projectCreateRequest.techStack(),
-        projectCreateRequest.teamSize(),
-        userService.getUser(userId),
-        projectCreateRequest.durationWeeks()
-    );
+    Project project = Project.builder()
+        .title(projectCreateRequest.title())
+        .description(projectCreateRequest.description())
+        .techStack(projectCreateRequest.techStack())
+        .teamSize(projectCreateRequest.teamSize())
+        .creator(userService.getUser(userId))
+        .durationWeeks(projectCreateRequest.durationWeeks())
+        .build();
 
     return ProjectMapper.toProjectDetailResponse(projectRepository.save(project));
   }
