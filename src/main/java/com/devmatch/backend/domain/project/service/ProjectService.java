@@ -4,7 +4,6 @@ import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectResponse;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
-import com.devmatch.backend.domain.project.mapper.ProjectMapper;
 import com.devmatch.backend.domain.project.repository.ProjectRepository;
 import com.devmatch.backend.domain.user.service.UserService;
 import java.util.List;
@@ -38,14 +37,14 @@ public class ProjectService {
         .durationWeeks(projectCreateRequest.durationWeeks())
         .build();
 
-    return ProjectMapper.toProjectDetailResponse(projectRepository.save(project));
+    return ProjectResponse.from(projectRepository.save(project));
   }
 
   @Transactional(readOnly = true)
   public List<ProjectResponse> getProjects() {
     return projectRepository.findAll()
         .stream()
-        .map(ProjectMapper::toProjectDetailResponse)
+        .map(ProjectResponse::from)
         .toList();
   }
 
@@ -53,13 +52,13 @@ public class ProjectService {
   public List<ProjectResponse> getProjectsByUserId(Long userId) {
     return projectRepository.findAllByCreatorId(userId)
         .stream()
-        .map(ProjectMapper::toProjectDetailResponse)
+        .map(ProjectResponse::from)
         .toList();
   }
 
   @Transactional(readOnly = true)
   public ProjectResponse getProjectDetail(Long projectId) {
-    return ProjectMapper.toProjectDetailResponse(getProject(projectId));
+    return ProjectResponse.from(getProject(projectId));
   }
 
   @Transactional
@@ -67,7 +66,7 @@ public class ProjectService {
     Project project = getProject(projectId);
     project.changeStatus(status);
 
-    return ProjectMapper.toProjectDetailResponse(project);
+    return ProjectResponse.from(project);
   }
 
   @Transactional
@@ -75,7 +74,7 @@ public class ProjectService {
     Project project = getProject(projectId);
     project.changeContent(content);
 
-    return ProjectMapper.toProjectDetailResponse(project);
+    return ProjectResponse.from(project);
   }
 
   @Transactional
