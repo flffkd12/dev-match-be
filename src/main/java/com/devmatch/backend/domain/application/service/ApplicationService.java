@@ -33,7 +33,7 @@ public class ApplicationService {
       Long projectId,
       ProjectApplyRequest projectApplyRequest
   ) {
-    Project project = projectService.getProject(projectId); // 프로젝트 ID로 프로젝트 정보 가져오기
+    Project project = projectService.findByProjectId(projectId); // 프로젝트 ID로 프로젝트 정보 가져오기
 
     Application application = Application.builder()
         .user(userService.getUser(userId))

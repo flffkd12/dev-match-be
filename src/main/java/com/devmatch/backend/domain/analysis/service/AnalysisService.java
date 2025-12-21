@@ -140,7 +140,7 @@ public class AnalysisService {
   @Transactional(readOnly = true)
   public String createTeamRoleAssignment(Long projectId) {
 
-    Project project = projectService.getProject(projectId);
+    Project project = projectService.findByProjectId(projectId);
 
     List<Application> approvedApplications = applicationService.findByProjectIdAndStatus(
         projectId,

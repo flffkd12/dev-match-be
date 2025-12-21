@@ -59,7 +59,7 @@ public class ProjectController {
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<ProjectResponse>> get(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 단일 조회 성공",
-        projectService.getProjectDetail(id)));
+        projectService.getProject(id)));
   }
 
   @PatchMapping("/{id}/status")

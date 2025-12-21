@@ -42,14 +42,14 @@ public class ProjectService {
   }
 
   public ProjectResponse modifyStatus(Long projectId, ProjectStatus status) {
-    Project project = getProject(projectId);
+    Project project = findByProjectId(projectId);
     project.changeStatus(status);
 
     return ProjectResponse.from(project);
   }
 
   public ProjectResponse modifyContent(Long projectId, String content) {
-    Project project = getProject(projectId);
+    Project project = findByProjectId(projectId);
     project.changeContent(content);
 
     return ProjectResponse.from(project);
@@ -77,12 +77,12 @@ public class ProjectService {
   }
 
   @Transactional(readOnly = true)
-  public ProjectResponse getProjectDetail(Long projectId) {
-    return ProjectResponse.from(getProject(projectId));
+  public ProjectResponse getProject(Long projectId) {
+    return ProjectResponse.from(findByProjectId(projectId));
   }
 
   @Transactional(readOnly = true)
-  public Project getProject(Long projectId) {
+  public Project findByProjectId(Long projectId) {
     return projectRepository.findById(projectId)
         .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
   }
