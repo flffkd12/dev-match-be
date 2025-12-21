@@ -7,6 +7,8 @@ import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.common.BaseEntity;
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -73,8 +75,7 @@ public class Project extends BaseEntity {
 
   public void changeStatus(ProjectStatus newStatus) {
     if (newStatus == this.status) {
-      throw new IllegalArgumentException(
-          "현재 상태(%s)와 동일한 상태(%s)로 변경할 수 없습니다".formatted(this.status, newStatus));
+      throw new CustomException(ErrorCode.PROJECT_SAME_STATUS);
     }
 
     this.status = newStatus;
@@ -83,7 +84,7 @@ public class Project extends BaseEntity {
   public void changeCurTeamSize(ApplicationStatus oldStatus, ApplicationStatus newStatus) {
     if (oldStatus != ApplicationStatus.APPROVED && newStatus == ApplicationStatus.APPROVED) {
       if (this.currentTeamSize.equals(this.teamSize)) {
-        throw new IllegalArgumentException("정원이 가득 차서 지원서를 더 이상 승인할 수 없습니다");
+        throw new CustomException(ErrorCode.PROJECT_FULL_PEOPLE);
       }
 
       this.currentTeamSize++;

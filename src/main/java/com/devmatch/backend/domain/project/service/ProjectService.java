@@ -6,20 +6,21 @@ import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.project.repository.ProjectRepository;
 import com.devmatch.backend.domain.user.service.UserService;
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class ProjectService {
 
   private final UserService userService;
   private final ProjectRepository projectRepository;
 
-  @Transactional
   public ProjectResponse createProject(
       Long userId,
       ProjectCreateRequest projectCreateRequest
@@ -38,6 +39,25 @@ public class ProjectService {
         .build();
 
     return ProjectResponse.from(projectRepository.save(project));
+  }
+
+  public ProjectResponse modifyStatus(Long projectId, ProjectStatus status) {
+    Project project = getProject(projectId);
+    project.changeStatus(status);
+
+    return ProjectResponse.from(project);
+  }
+
+  public ProjectResponse modifyContent(Long projectId, String content) {
+    Project project = getProject(projectId);
+    project.changeContent(content);
+
+    return ProjectResponse.from(project);
+  }
+
+  public void deleteProject(Long projectId) {
+    getProject(projectId);
+    projectRepository.deleteById(projectId);
   }
 
   @Transactional(readOnly = true)
@@ -61,30 +81,9 @@ public class ProjectService {
     return ProjectResponse.from(getProject(projectId));
   }
 
-  @Transactional
-  public ProjectResponse modifyStatus(Long projectId, ProjectStatus status) {
-    Project project = getProject(projectId);
-    project.changeStatus(status);
-
-    return ProjectResponse.from(project);
-  }
-
-  @Transactional
-  public ProjectResponse modifyContent(Long projectId, String content) {
-    Project project = getProject(projectId);
-    project.changeContent(content);
-
-    return ProjectResponse.from(project);
-  }
-
-  @Transactional
-  public void deleteProject(Long projectId) {
-    getProject(projectId);
-    projectRepository.deleteById(projectId);
-  }
-
+  @Transactional(readOnly = true)
   public Project getProject(Long projectId) {
     return projectRepository.findById(projectId)
-        .orElseThrow(() -> new NoSuchElementException("조회하려는 프로젝트가 없습니다"));
+        .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
   }
 }
