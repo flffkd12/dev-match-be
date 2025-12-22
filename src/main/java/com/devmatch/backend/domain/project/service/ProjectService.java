@@ -50,7 +50,7 @@ public class ProjectService {
 
   public ProjectResponse modifyContent(Long projectId, String content) {
     Project project = findByProjectId(projectId);
-    project.changeContent(content);
+    project.updateRoleAssignment(content);
 
     return ProjectResponse.from(project);
   }

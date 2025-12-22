@@ -18,7 +18,13 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ApiResponse<Void>> handleCustomException(CustomException e) {
-    log.warn("handleCustomException: {}", e.getMessage(), e);
+    String logMessage = e.getDebugMessage() != null ? e.getMessage() + " [Debug: " + e.getDebugMessage() + "]" : e.getMessage();
+
+    if (e.getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
+      log.error("handleCustomException: {}", logMessage, e);
+    } else {
+      log.warn("handleCustomException: {}", logMessage, e);
+    }
 
     ApiResponse<Void> response = ApiResponse.fail(e.getResultCode(), e.getMessage());
     return ResponseEntity.status(e.getHttpStatus()).body(response);

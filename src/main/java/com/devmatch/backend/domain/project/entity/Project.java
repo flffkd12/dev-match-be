@@ -3,7 +3,6 @@ package com.devmatch.backend.domain.project.entity;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.devmatch.backend.domain.application.entity.Application;
-import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.common.BaseEntity;
@@ -77,29 +76,36 @@ public class Project extends BaseEntity {
     if (newStatus == this.status) {
       throw new CustomException(ErrorCode.PROJECT_SAME_STATUS);
     }
-
     this.status = newStatus;
   }
 
-  public void changeCurTeamSize(ApplicationStatus oldStatus, ApplicationStatus newStatus) {
-    if (oldStatus != ApplicationStatus.APPROVED && newStatus == ApplicationStatus.APPROVED) {
-      if (this.currentTeamSize.equals(this.teamSize)) {
-        throw new CustomException(ErrorCode.PROJECT_FULL_PEOPLE);
-      }
-
-      this.currentTeamSize++;
-    } else if (oldStatus == ApplicationStatus.APPROVED && newStatus != ApplicationStatus.APPROVED) {
-      this.currentTeamSize--;
+  public void increaseCurrentTeamSize() {
+    if (this.currentTeamSize > this.teamSize) {
+      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "Project ID: " + getId() +
+          ", Current size: " + this.currentTeamSize + ", Max: " + this.teamSize);
     }
 
     if (this.currentTeamSize.equals(this.teamSize)) {
+      throw new CustomException(ErrorCode.PROJECT_FULL_PEOPLE);
+    }
+
+    this.currentTeamSize++;
+
+    if (this.currentTeamSize.equals(this.teamSize)) {
       this.status = ProjectStatus.COMPLETED;
-    } else {
-      this.status = ProjectStatus.RECRUITING;
     }
   }
 
-  public void changeContent(String roleAssignment) {
+  public void decreaseCurrentTeamSize() {
+    if (this.currentTeamSize <= 0) {
+      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR,
+          "Project ID: " + getId() + ", Current size: " + this.currentTeamSize);
+    }
+    this.currentTeamSize--;
+    this.status = ProjectStatus.RECRUITING;
+  }
+
+  public void updateRoleAssignment(String roleAssignment) {
     this.roleAssignment = roleAssignment;
   }
 }
