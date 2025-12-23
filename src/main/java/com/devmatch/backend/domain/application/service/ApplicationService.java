@@ -2,12 +2,12 @@ package com.devmatch.backend.domain.application.service;
 
 import com.devmatch.backend.domain.analysis.entity.AnalysisResult;
 import com.devmatch.backend.domain.application.dto.request.ApplicationStatusUpdateRequestDto;
+import com.devmatch.backend.domain.application.dto.request.ProjectApplyRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.repository.ApplicationRepository;
-import com.devmatch.backend.domain.project.dto.ProjectApplyRequest;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.domain.user.service.UserService;
@@ -30,10 +30,9 @@ public class ApplicationService {
   @Transactional
   public ApplicationDetailResponseDto createApplication(
       Long userId,
-      Long projectId,
       ProjectApplyRequest projectApplyRequest
   ) {
-    Project project = projectService.findByProjectId(projectId); // 프로젝트 ID로 프로젝트 정보 가져오기
+    Project project = projectService.findByProjectId(projectApplyRequest.projectId());
 
     Application application = Application.builder()
         .user(userService.getUser(userId))

@@ -1,9 +1,6 @@
 package com.devmatch.backend.domain.project.controller;
 
-import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
-import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.auth.security.SecurityUser;
-import com.devmatch.backend.domain.project.dto.ProjectApplyRequest;
 import com.devmatch.backend.domain.project.dto.ProjectContentUpdateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectResponse;
@@ -31,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProjectController {
 
   private final ProjectService projectService;
-  private final ApplicationService applicationService;
 
   @PostMapping
   public ResponseEntity<ApiResponse<ProjectResponse>> create(
@@ -84,23 +80,5 @@ public class ProjectController {
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     projectService.deleteProject(id);
     return ResponseEntity.noContent().build();
-  }
-
-  @GetMapping("/{id}/applications")
-  public ResponseEntity<ApiResponse<List<ApplicationDetailResponseDto>>> getApplications(
-      @PathVariable Long id
-  ) {
-    return ResponseEntity.ok(ApiResponse.success("프로젝트의 지원서 전체 목록 조회 성공",
-        applicationService.getApplicationsByProjectId(id)));
-  }
-
-  @PostMapping("/{id}/applications")
-  public ResponseEntity<ApiResponse<ApplicationDetailResponseDto>> apply(
-      @PathVariable Long id,
-      @AuthenticationPrincipal SecurityUser securityUser,
-      @Valid @RequestBody ProjectApplyRequest projectApplyRequest
-  ) {
-    return ResponseEntity.ok(ApiResponse.success("프로젝트의 지원서 전체 목록 조회 성공",
-        applicationService.createApplication(securityUser.getUserId(), id, projectApplyRequest)));
   }
 }

@@ -1,6 +1,7 @@
 package com.devmatch.backend.domain.application.controller;
 
 import com.devmatch.backend.domain.application.dto.request.ApplicationStatusUpdateRequestDto;
+import com.devmatch.backend.domain.application.dto.request.ProjectApplyRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
 import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.auth.security.SecurityUser;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,6 +28,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApplicationController {
 
   private final ApplicationService applicationService;
+
+  @PostMapping
+  public ResponseEntity<ApiResponse<ApplicationDetailResponseDto>> apply(
+      @AuthenticationPrincipal SecurityUser securityUser,
+      @Valid @RequestBody ProjectApplyRequest projectApplyRequest
+  ) {
+    return ResponseEntity.ok(ApiResponse.success("지원서 생성 성공",
+        applicationService.createApplication(securityUser.getUserId(), projectApplyRequest)));
+  }
+
+  @GetMapping
+  public ResponseEntity<ApiResponse<List<ApplicationDetailResponseDto>>> getApplications(
+      @RequestParam Long projectId
+  ) {
+    return ResponseEntity.ok(ApiResponse.success("프로젝트의 지원서 목록 조회 성공",
+        applicationService.getApplicationsByProjectId(projectId)));
+  }
 
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<ApplicationDetailResponseDto>> getApplicationDetail(
