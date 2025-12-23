@@ -16,7 +16,8 @@ public record ProjectUpdateRequest(
     @Size(max = 2000, message = "설명은 2000자 이하여야 합니다.")
     String description,
 
-    @NotEmpty(message = "기술 스택은 최소 하나 이상 선택해야 합니다.")
+    @NotEmpty(message = "기술 스택은 하나 이상 있어야합니다.")
+    @Size(max = 30, message = "기술 스택은 최대 30개까지입니다.")
     List<String> techStacks,
 
     @NotNull(message = "팀 규모를 입력해주세요.")

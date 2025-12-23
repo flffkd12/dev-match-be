@@ -10,7 +10,6 @@ import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForJapaneseDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,6 @@ public class ProjectService {
 
   private final UserService userService;
   private final ProjectRepository projectRepository;
-  private final FutureOrPresentValidatorForJapaneseDate futureOrPresentValidatorForJapaneseDate;
 
   public ProjectResponse createProject(
       Long userId,
