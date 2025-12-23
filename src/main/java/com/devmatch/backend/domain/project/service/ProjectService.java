@@ -25,14 +25,10 @@ public class ProjectService {
       Long userId,
       ProjectCreateRequest projectCreateRequest
   ) {
-    if (!projectCreateRequest.techStack().matches("^([\\w .+#-]+)(, [\\w .+#-]+)*$")) {
-      throw new IllegalArgumentException("기술 스택 기재 형식이 올바르지 않습니다. \", \"로 구분해주세요");
-    }
-
     Project project = Project.builder()
         .title(projectCreateRequest.title())
         .description(projectCreateRequest.description())
-        .techStack(projectCreateRequest.techStack())
+        .techStacks(projectCreateRequest.techStacks())
         .teamSize(projectCreateRequest.teamSize())
         .creator(userService.getUser(userId))
         .durationWeeks(projectCreateRequest.durationWeeks())

@@ -3,7 +3,6 @@ package com.devmatch.backend.domain.project.dto;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 public record ProjectResponse(
@@ -27,7 +26,7 @@ public record ProjectResponse(
         project.getCreator().getNickname(),
         project.getTitle(),
         project.getDescription(),
-        Arrays.stream(project.getTechStack().split(", ")).toList(),
+        project.getTechStacks(),
         project.getTeamSize(),
         project.getCurrentTeamSize(),
         project.getDurationWeeks(),

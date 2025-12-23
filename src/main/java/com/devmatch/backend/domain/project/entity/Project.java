@@ -8,10 +8,14 @@ import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.common.BaseEntity;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -33,7 +37,12 @@ public class Project extends BaseEntity {
 
   private String title;
   private String description;
-  private String techStack;
+
+  @ElementCollection
+  @CollectionTable(name = "project_tech_stacks", joinColumns = @JoinColumn(name = "project_id"))
+  @Column(name = "tech_stack")
+  private List<String> techStacks;
+
   private String roleAssignment;
 
   private Integer teamSize;
@@ -56,20 +65,20 @@ public class Project extends BaseEntity {
   public Project(
       String title,
       String description,
-      String techStack,
+      List<String> techStacks,
       Integer teamSize,
-      User creator,
-      Integer durationWeeks
+      Integer durationWeeks,
+      User creator
   ) {
     this.title = title;
     this.description = description;
-    this.techStack = techStack;
-    this.teamSize = teamSize;
-    this.creator = creator;
-    this.status = ProjectStatus.RECRUITING;
-    this.currentTeamSize = 0;
+    this.techStacks = techStacks;
     this.roleAssignment = "";
+    this.status = ProjectStatus.RECRUITING;
+    this.teamSize = teamSize;
+    this.currentTeamSize = 0;
     this.durationWeeks = durationWeeks;
+    this.creator = creator;
   }
 
   public void changeStatus(ProjectStatus newStatus) {
