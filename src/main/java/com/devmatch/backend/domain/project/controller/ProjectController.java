@@ -58,15 +58,19 @@ public class ProjectController {
   @PatchMapping("/{projectId}")
   public ResponseEntity<ApiResponse<ProjectResponse>> updateProject(
       @PathVariable Long projectId,
-      @Valid @RequestBody ProjectUpdateRequest projectUpdateRequest
+      @Valid @RequestBody ProjectUpdateRequest projectUpdateRequest,
+      @AuthenticationPrincipal SecurityUser securityUser
   ) {
     return ApiResponse.success(SuccessCode.PROJECT_UPDATE,
-        projectService.updateProject(projectId, projectUpdateRequest));
+        projectService.updateProject(securityUser.getUserId(), projectId, projectUpdateRequest));
   }
 
   @DeleteMapping("/{projectId}")
-  public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Long projectId) {
-    projectService.deleteProject(projectId);
+  public ResponseEntity<ApiResponse<Void>> deleteProject(
+      @PathVariable Long projectId,
+      @AuthenticationPrincipal SecurityUser securityUser
+  ) {
+    projectService.deleteProject(securityUser.getUserId(), projectId);
     return ApiResponse.success(SuccessCode.PROJECT_DELETE);
   }
 }

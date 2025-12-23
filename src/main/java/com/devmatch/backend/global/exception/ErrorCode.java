@@ -17,6 +17,7 @@ public enum ErrorCode {
   PROJECT_TEAM_SIZE_INVALID(HttpStatus.BAD_REQUEST, "PROJECT-400-3",
       "프로젝트 최대 인원이 현재 인원보다 적을 수 없습니다."),
   PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-404", "프로젝트를 찾을 수 없습니다."),
+  PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PROJECT-403", "해당 프로젝트에 대한 권한이 없습니다."),
 
   // 인증 관련 오류
   INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-1", "유효하지 않은 엑세스 토큰입니다."),

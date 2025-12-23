@@ -37,8 +37,13 @@ public class ProjectService {
     return ProjectResponse.from(projectRepository.save(project));
   }
 
-  public ProjectResponse updateProject(Long projectId, ProjectUpdateRequest projectUpdateRequest) {
+  public ProjectResponse updateProject(
+      Long userId,
+      Long projectId,
+      ProjectUpdateRequest projectUpdateRequest
+  ) {
     Project project = findByProjectId(projectId);
+    validateProjectOwner(project, userId);
     project.update(
         projectUpdateRequest.title(),
         projectUpdateRequest.description(),
@@ -51,8 +56,9 @@ public class ProjectService {
     return ProjectResponse.from(project);
   }
 
-  public void deleteProject(Long projectId) {
+  public void deleteProject(Long userId, Long projectId) {
     Project project = findByProjectId(projectId);
+    validateProjectOwner(project, userId);
     projectRepository.delete(project);
   }
 
@@ -81,5 +87,11 @@ public class ProjectService {
   public Project findByProjectId(Long projectId) {
     return projectRepository.findById(projectId)
         .orElseThrow(() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND));
+  }
+
+  private void validateProjectOwner(Project project, Long userId) {
+    if (!project.getCreator().getId().equals(userId)) {
+      throw new CustomException(ErrorCode.PROJECT_ACCESS_DENIED);
+    }
   }
 }
