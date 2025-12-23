@@ -7,10 +7,10 @@ import com.devmatch.backend.domain.project.dto.ProjectResponse;
 import com.devmatch.backend.domain.project.dto.ProjectStatusUpdateRequest;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.response.ApiResponse;
+import com.devmatch.backend.global.response.SuccessCode;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,51 +34,49 @@ public class ProjectController {
       @Valid @RequestBody ProjectCreateRequest projectCreateRequest,
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
-    return ResponseEntity.ok(ApiResponse.success("프로젝트 생성 성공",
-        projectService.createProject(securityUser.getUserId(), projectCreateRequest)));
+    return ApiResponse.success(SuccessCode.PROJECT_CREATE,
+        projectService.createProject(securityUser.getUserId(), projectCreateRequest));
   }
 
   @GetMapping
   public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAllProjects() {
-    return ResponseEntity.ok(ApiResponse.success("프로젝트 전체 조회 성공",
-        projectService.getProjects()));
+    return ApiResponse.success(SuccessCode.PROJECT_FIND_ALL, projectService.getProjects());
   }
 
   @GetMapping("/my")
-  public ResponseEntity<List<ProjectResponse>> getMyProjects(
+  public ResponseEntity<ApiResponse<List<ProjectResponse>>> getMyProjects(
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(projectService.getProjectsByUserId(securityUser.getUserId()));
+    return ApiResponse.success(SuccessCode.PROJECT_FIND_MINE,
+        projectService.getProjectsByUserId(securityUser.getUserId()));
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<ProjectResponse>> getProject(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.success("프로젝트 단일 조회 성공",
-        projectService.getProject(id)));
+  @GetMapping("/{projectId}")
+  public ResponseEntity<ApiResponse<ProjectResponse>> getProject(@PathVariable Long projectId) {
+    return ApiResponse.success(SuccessCode.PROJECT_FIND_ONE, projectService.getProject(projectId));
   }
 
-  @PatchMapping("/{id}/status")
+  @PatchMapping("/{projectId}/status")
   public ResponseEntity<ApiResponse<ProjectResponse>> modifyProjectStatus(
-      @PathVariable Long id,
+      @PathVariable Long projectId,
       @Valid @RequestBody ProjectStatusUpdateRequest projectStatusUpdateRequest
   ) {
-    return ResponseEntity.ok(ApiResponse.success("프로젝트 상태 수정 성공",
-        projectService.modifyStatus(id, projectStatusUpdateRequest.status())));
+    return ApiResponse.success(SuccessCode.PROJECT_UPDATE_STATUS,
+        projectService.modifyStatus(projectId, projectStatusUpdateRequest.status()));
   }
 
-  @PatchMapping("/{id}/content")
+  @PatchMapping("/{projectId}/content")
   public ResponseEntity<ApiResponse<ProjectResponse>> modifyProjectRoleAssignment(
-      @PathVariable Long id,
+      @PathVariable Long projectId,
       @Valid @RequestBody ProjectContentUpdateRequest projectContentUpdateRequest
   ) {
-    return ResponseEntity.ok(ApiResponse.success("역할 배분 내용 수정 성공",
-        projectService.modifyRoleAssignment(id, projectContentUpdateRequest.content())));
+    return ApiResponse.success(SuccessCode.PROJECT_UPDATE_CONTENT,
+        projectService.modifyRoleAssignment(projectId, projectContentUpdateRequest.content()));
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-    projectService.deleteProject(id);
-    return ResponseEntity.noContent().build();
+  @DeleteMapping("/{projectId}")
+  public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Long projectId) {
+    projectService.deleteProject(projectId);
+    return ApiResponse.success(SuccessCode.PROJECT_DELETE);
   }
 }
