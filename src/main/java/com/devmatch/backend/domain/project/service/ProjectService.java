@@ -2,14 +2,15 @@ package com.devmatch.backend.domain.project.service;
 
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectResponse;
+import com.devmatch.backend.domain.project.dto.ProjectUpdateRequest;
 import com.devmatch.backend.domain.project.entity.Project;
-import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.project.repository.ProjectRepository;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForJapaneseDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class ProjectService {
 
   private final UserService userService;
   private final ProjectRepository projectRepository;
+  private final FutureOrPresentValidatorForJapaneseDate futureOrPresentValidatorForJapaneseDate;
 
   public ProjectResponse createProject(
       Long userId,
@@ -37,16 +39,16 @@ public class ProjectService {
     return ProjectResponse.from(projectRepository.save(project));
   }
 
-  public ProjectResponse modifyStatus(Long projectId, ProjectStatus status) {
+  public ProjectResponse updateProject(Long projectId, ProjectUpdateRequest projectUpdateRequest) {
     Project project = findByProjectId(projectId);
-    project.changeStatus(status);
-
-    return ProjectResponse.from(project);
-  }
-
-  public ProjectResponse modifyRoleAssignment(Long projectId, String roleAssignment) {
-    Project project = findByProjectId(projectId);
-    project.updateRoleAssignment(roleAssignment);
+    project.update(
+        projectUpdateRequest.title(),
+        projectUpdateRequest.description(),
+        projectUpdateRequest.techStacks(),
+        projectUpdateRequest.teamSize(),
+        projectUpdateRequest.durationWeeks(),
+        projectUpdateRequest.roleAssignment()
+    );
 
     return ProjectResponse.from(project);
   }

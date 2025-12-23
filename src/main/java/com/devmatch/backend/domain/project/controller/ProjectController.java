@@ -1,10 +1,9 @@
 package com.devmatch.backend.domain.project.controller;
 
 import com.devmatch.backend.domain.auth.security.SecurityUser;
-import com.devmatch.backend.domain.project.dto.ProjectContentUpdateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.ProjectResponse;
-import com.devmatch.backend.domain.project.dto.ProjectStatusUpdateRequest;
+import com.devmatch.backend.domain.project.dto.ProjectUpdateRequest;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.response.ApiResponse;
 import com.devmatch.backend.global.response.SuccessCode;
@@ -56,22 +55,13 @@ public class ProjectController {
     return ApiResponse.success(SuccessCode.PROJECT_FIND_ONE, projectService.getProject(projectId));
   }
 
-  @PatchMapping("/{projectId}/status")
-  public ResponseEntity<ApiResponse<ProjectResponse>> modifyProjectStatus(
+  @PatchMapping("/{projectId}")
+  public ResponseEntity<ApiResponse<ProjectResponse>> updateProject(
       @PathVariable Long projectId,
-      @Valid @RequestBody ProjectStatusUpdateRequest projectStatusUpdateRequest
+      @Valid @RequestBody ProjectUpdateRequest projectUpdateRequest
   ) {
-    return ApiResponse.success(SuccessCode.PROJECT_UPDATE_STATUS,
-        projectService.modifyStatus(projectId, projectStatusUpdateRequest.status()));
-  }
-
-  @PatchMapping("/{projectId}/content")
-  public ResponseEntity<ApiResponse<ProjectResponse>> modifyProjectRoleAssignment(
-      @PathVariable Long projectId,
-      @Valid @RequestBody ProjectContentUpdateRequest projectContentUpdateRequest
-  ) {
-    return ApiResponse.success(SuccessCode.PROJECT_UPDATE_CONTENT,
-        projectService.modifyRoleAssignment(projectId, projectContentUpdateRequest.content()));
+    return ApiResponse.success(SuccessCode.PROJECT_UPDATE,
+        projectService.updateProject(projectId, projectUpdateRequest));
   }
 
   @DeleteMapping("/{projectId}")

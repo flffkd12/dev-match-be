@@ -81,13 +81,6 @@ public class Project extends BaseEntity {
     this.creator = creator;
   }
 
-  public void changeStatus(ProjectStatus newStatus) {
-    if (newStatus == this.status) {
-      throw new CustomException(ErrorCode.PROJECT_SAME_STATUS);
-    }
-    this.status = newStatus;
-  }
-
   public void increaseCurrentTeamSize() {
     if (this.currentTeamSize > this.teamSize) {
       throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "Project ID: " + getId() +
@@ -114,7 +107,25 @@ public class Project extends BaseEntity {
     this.status = ProjectStatus.RECRUITING;
   }
 
-  public void updateRoleAssignment(String roleAssignment) {
+  public void update(
+      String title,
+      String description,
+      List<String> techStacks,
+      Integer teamSize,
+      Integer durationWeeks,
+      String roleAssignment
+  ) {
+    if (teamSize < this.currentTeamSize) {
+      throw new CustomException(ErrorCode.PROJECT_TEAM_SIZE_INVALID);
+    } else if (teamSize.equals(this.currentTeamSize)) {
+      this.status = ProjectStatus.COMPLETED;
+    }
+    
+    this.title = title;
+    this.description = description;
+    this.techStacks = techStacks;
+    this.teamSize = teamSize;
+    this.durationWeeks = durationWeeks;
     this.roleAssignment = roleAssignment;
   }
 }
