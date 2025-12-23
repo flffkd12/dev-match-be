@@ -52,8 +52,8 @@ public class ProjectService {
   }
 
   public void deleteProject(Long projectId) {
-    getProject(projectId);
-    projectRepository.deleteById(projectId);
+    Project project = findByProjectId(projectId);
+    projectRepository.delete(project);
   }
 
   @Transactional(readOnly = true)
