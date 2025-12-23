@@ -30,7 +30,7 @@ public class ProjectController {
   private final ProjectService projectService;
 
   @PostMapping
-  public ResponseEntity<ApiResponse<ProjectResponse>> create(
+  public ResponseEntity<ApiResponse<ProjectResponse>> createProject(
       @Valid @RequestBody ProjectCreateRequest projectCreateRequest,
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
@@ -39,7 +39,7 @@ public class ProjectController {
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAll() {
+  public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAllProjects() {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 전체 조회 성공",
         projectService.getProjects()));
   }
@@ -53,13 +53,13 @@ public class ProjectController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<ProjectResponse>> get(@PathVariable Long id) {
+  public ResponseEntity<ApiResponse<ProjectResponse>> getProject(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.success("프로젝트 단일 조회 성공",
         projectService.getProject(id)));
   }
 
   @PatchMapping("/{id}/status")
-  public ResponseEntity<ApiResponse<ProjectResponse>> modifyStatus(
+  public ResponseEntity<ApiResponse<ProjectResponse>> modifyProjectStatus(
       @PathVariable Long id,
       @Valid @RequestBody ProjectStatusUpdateRequest projectStatusUpdateRequest
   ) {
@@ -68,16 +68,16 @@ public class ProjectController {
   }
 
   @PatchMapping("/{id}/content")
-  public ResponseEntity<ApiResponse<ProjectResponse>> modifyContent(
+  public ResponseEntity<ApiResponse<ProjectResponse>> modifyProjectRoleAssignment(
       @PathVariable Long id,
       @Valid @RequestBody ProjectContentUpdateRequest projectContentUpdateRequest
   ) {
     return ResponseEntity.ok(ApiResponse.success("역할 배분 내용 수정 성공",
-        projectService.modifyContent(id, projectContentUpdateRequest.content())));
+        projectService.modifyRoleAssignment(id, projectContentUpdateRequest.content())));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
     projectService.deleteProject(id);
     return ResponseEntity.noContent().build();
   }

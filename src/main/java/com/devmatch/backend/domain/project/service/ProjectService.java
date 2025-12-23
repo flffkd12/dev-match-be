@@ -44,7 +44,7 @@ public class ProjectService {
     return ProjectResponse.from(project);
   }
 
-  public ProjectResponse modifyContent(Long projectId, String roleAssignment) {
+  public ProjectResponse modifyRoleAssignment(Long projectId, String roleAssignment) {
     Project project = findByProjectId(projectId);
     project.updateRoleAssignment(roleAssignment);
 
