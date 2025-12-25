@@ -49,7 +49,8 @@ public class Project extends BaseEntity {
   private Integer currentTeamSize;
   private Integer durationWeeks;
 
-  @ManyToOne
+  @ManyToOne(fetch = LAZY)
+  @JoinColumn(name = "creator_id")
   private User creator;
 
   @Enumerated(EnumType.STRING)
@@ -120,7 +121,7 @@ public class Project extends BaseEntity {
     } else if (teamSize.equals(this.currentTeamSize)) {
       this.status = ProjectStatus.COMPLETED;
     }
-    
+
     this.title = title;
     this.description = description;
     this.techStacks = techStacks;
