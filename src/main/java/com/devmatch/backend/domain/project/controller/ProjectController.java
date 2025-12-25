@@ -8,8 +8,11 @@ import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.response.ApiResponse;
 import com.devmatch.backend.global.response.SuccessCode;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,16 +41,19 @@ public class ProjectController {
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAllProjects() {
-    return ApiResponse.success(SuccessCode.PROJECT_FIND_ALL, projectService.getProjects());
+  public ResponseEntity<ApiResponse<Page<ProjectResponse>>> getAllProjects(
+      @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+  ) {
+    return ApiResponse.success(SuccessCode.PROJECT_FIND_ALL, projectService.getProjects(pageable));
   }
 
   @GetMapping("/my")
-  public ResponseEntity<ApiResponse<List<ProjectResponse>>> getMyProjects(
-      @AuthenticationPrincipal SecurityUser securityUser
+  public ResponseEntity<ApiResponse<Page<ProjectResponse>>> getMyProjects(
+      @AuthenticationPrincipal SecurityUser securityUser,
+      @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
   ) {
     return ApiResponse.success(SuccessCode.PROJECT_FIND_MINE,
-        projectService.getProjectsByUserId(securityUser.getUserId()));
+        projectService.getProjectsByUserId(securityUser.getUserId(), pageable));
   }
 
   @GetMapping("/{projectId}")

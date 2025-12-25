@@ -8,8 +8,9 @@ import com.devmatch.backend.domain.project.repository.ProjectRepository;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,19 +64,15 @@ public class ProjectService {
   }
 
   @Transactional(readOnly = true)
-  public List<ProjectResponse> getProjects() {
-    return projectRepository.findAll()
-        .stream()
-        .map(ProjectResponse::from)
-        .toList();
+  public Page<ProjectResponse> getProjects(Pageable pageable) {
+    return projectRepository.findAll(pageable)
+        .map(ProjectResponse::from);
   }
 
   @Transactional(readOnly = true)
-  public List<ProjectResponse> getProjectsByUserId(Long userId) {
-    return projectRepository.findAllByCreatorId(userId)
-        .stream()
-        .map(ProjectResponse::from)
-        .toList();
+  public Page<ProjectResponse> getProjectsByUserId(Long userId, Pageable pageable) {
+    return projectRepository.findAllByCreatorId(userId, pageable)
+        .map(ProjectResponse::from);
   }
 
   @Transactional(readOnly = true)
