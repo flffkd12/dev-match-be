@@ -1,6 +1,6 @@
 package com.devmatch.backend.domain.application.service;
 
-import com.devmatch.backend.domain.application.dto.request.ProjectApplyRequest;
+import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
@@ -28,17 +28,17 @@ public class ApplicationService {
 
   public ApplicationResponse createApplication(
       Long userId,
-      ProjectApplyRequest projectApplyRequest
+      ApplicationCreateRequest applicationCreateRequest
   ) {
-    Project project = projectService.findByProjectId(projectApplyRequest.projectId());
+    Project project = projectService.findByProjectId(applicationCreateRequest.projectId());
 
     Application application = Application.builder()
         .user(userService.getUser(userId))
         .project(project)
         .build();
 
-    List<String> techStacks = projectApplyRequest.techStacks();
-    List<Integer> techScores = projectApplyRequest.techScores();
+    List<String> techStacks = applicationCreateRequest.techStacks();
+    List<Integer> techScores = applicationCreateRequest.techScores();
 
     List<SkillScore> skillScores = new ArrayList<>();
     for (int i = 0; i < techStacks.size(); i++) {

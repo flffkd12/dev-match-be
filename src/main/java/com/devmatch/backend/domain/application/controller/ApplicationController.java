@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.application.controller;
 
-import com.devmatch.backend.domain.application.dto.request.ApplicationStatusUpdateRequestDto;
-import com.devmatch.backend.domain.application.dto.request.ProjectApplyRequest;
+import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest;
+import com.devmatch.backend.domain.application.dto.request.ApplicationStatusUpdateRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.auth.security.SecurityUser;
@@ -32,10 +32,10 @@ public class ApplicationController {
   @PostMapping
   public ResponseEntity<ApiResponse<ApplicationResponse>> createApplication(
       @AuthenticationPrincipal SecurityUser securityUser,
-      @Valid @RequestBody ProjectApplyRequest projectApplyRequest
+      @Valid @RequestBody ApplicationCreateRequest applicationCreateRequest
   ) {
     return ApiResponse.success(SuccessCode.APPLICATION_CREATE,
-        applicationService.createApplication(securityUser.getUserId(), projectApplyRequest));
+        applicationService.createApplication(securityUser.getUserId(), applicationCreateRequest));
   }
 
   @GetMapping
@@ -65,9 +65,9 @@ public class ApplicationController {
   @PatchMapping("/{applicationId}/status")
   public ResponseEntity<ApiResponse<Void>> updateApplicationStatus(
       @PathVariable Long applicationId,
-      @Valid @RequestBody ApplicationStatusUpdateRequestDto reqBody
+      @Valid @RequestBody ApplicationStatusUpdateRequest applicationUpdateRequest
   ) {
-    applicationService.updateApplicationStatus(applicationId, reqBody.status());
+    applicationService.updateApplicationStatus(applicationId, applicationUpdateRequest.status());
     return ApiResponse.success(SuccessCode.APPLICATION_UPDATE_STATUS);
   }
 
