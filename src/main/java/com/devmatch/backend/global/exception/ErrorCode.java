@@ -8,6 +8,11 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
+  // 인증 관련 오류
+  INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-1", "유효하지 않은 엑세스 토큰입니다."),
+  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-2", "유효하지 않은 리프레시 토큰입니다. 다시 로그인 해주세요."),
+  ACCESS_WITHOUT_LOGIN(HttpStatus.UNAUTHORIZED, "AUTH-401-3", "로그인 없이 접근할 수 없습니다."),
+
   // 유저 관련 오류
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-404", "사용자를 찾을 수 없습니다."),
 
@@ -19,10 +24,8 @@ public enum ErrorCode {
   PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-404", "프로젝트를 찾을 수 없습니다."),
   PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PROJECT-403", "해당 프로젝트에 대한 권한이 없습니다."),
 
-  // 인증 관련 오류
-  INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-1", "유효하지 않은 엑세스 토큰입니다."),
-  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-401-2", "유효하지 않은 리프레시 토큰입니다. 다시 로그인 해주세요."),
-  ACCESS_WITHOUT_LOGIN(HttpStatus.UNAUTHORIZED, "AUTH-401-3", "로그인 없이 접근할 수 없습니다."),
+  // 지원서 관련 오류
+  APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICATION-404", "지원서를 찾을 수 없습니다."),
 
   // 공통 오류
   CLIENT_ERROR(HttpStatus.BAD_REQUEST, "CLIENT-400", "올바르지 않은 요청입니다."),

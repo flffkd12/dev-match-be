@@ -36,7 +36,7 @@ public class AnalysisService {
 
   @Transactional
   public AnalysisResult createAnalysisResult(Long applicationId) {
-    Application application = applicationService.getApplicationByApplicationId(applicationId);
+    Application application = applicationService.findByApplicationId(applicationId);
 
     Project project = application.getProject();
     List<SkillScore> userSkills = application.getSkillScore();
@@ -49,7 +49,7 @@ public class AnalysisService {
     prompt.append("- 프로젝트: ").append(project.getDescription()).append("\n");
     prompt.append("- 팀 규모: ").append(project.getTeamSize()).append("명 (역할 분담 가능)\n");
     prompt.append("- 프로젝트 기간: ").append(project.getDurationWeeks()).append("주 (학습 시간 충분)\n");
-    prompt.append("- 필요 기술: ").append(project.getTechStack()).append("\n\n");
+    prompt.append("- 필요 기술: ").append(project.getTechStacks()).append("\n\n");
 
     prompt.append("지원자 기술 역량:\n");
     for (SkillScore skill : userSkills) {
@@ -132,7 +132,7 @@ public class AnalysisService {
         .compatibilityReason(reason)
         .build();
 
-    applicationService.saveAnalysisResult(result.getApplication().getId(), result);
+    applicationService.findByApplicationId(applicationId).setAnalysisResult(result);
 
     return analysisRepository.save(result);
   }
@@ -168,7 +168,8 @@ public class AnalysisService {
     prompt.append("👥 팀원 기술 역량 분석:\n");
     for (int i = 0; i < approvedApplications.size(); i++) {
       Application application = approvedApplications.get(i);
-      prompt.append("팀원 ").append(i + 1).append(": ").append(application.getUser().getNickname())
+      prompt.append("팀원 ").append(i + 1).append(": ")
+          .append(application.getApplicant().getNickname())
           .append("\n");
 
       List<SkillScore> skills = application.getSkillScore();

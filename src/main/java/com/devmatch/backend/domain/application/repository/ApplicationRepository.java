@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-  List<Application> findAllByUserId(Long id);
+  List<Application> findAllByApplicantId(Long id);
 
   List<Application> findAllByProjectId(Long id);
 

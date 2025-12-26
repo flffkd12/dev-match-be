@@ -6,19 +6,19 @@ import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ApplicationDetailResponseDto(
-    Long applicationId,       // 지원서 ID
-    String nickname,          // 지원자 정보
-    ApplicationStatus status, // 지원서 승인 상태
-    LocalDateTime appliedAt,  // 지원 일시
+public record ApplicationResponse(
+    Long applicationId,
+    String nickname,
+    ApplicationStatus status,
+    LocalDateTime appliedAt,
     List<String> techName,    // 지원자의 기술명
     List<Integer> score       // 지원자의 기술 점수
 ) {
 
-  public ApplicationDetailResponseDto(Application application) {
-    this(
+  public static ApplicationResponse from(Application application) {
+    return new ApplicationResponse(
         application.getId(),
-        application.getUser().getNickname(),
+        application.getApplicant().getNickname(),
         application.getStatus(),
         application.getCreatedAt(),
         application.getSkillScore().stream()

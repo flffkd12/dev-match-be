@@ -28,10 +28,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "applications")
 public class Application extends BaseEntity {
 
-  // 이 지원서를 작성한 지원자의 고유 식별자
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "user_id")
-  private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "applicant_id")
+  private User applicant;
 
   // 지원한 프로젝트의 고유 식별자
   @ManyToOne(fetch = FetchType.LAZY)
@@ -54,7 +53,7 @@ public class Application extends BaseEntity {
 
   @Builder
   public Application(User user, Project project) {
-    this.user = user;
+    this.applicant = user;
     this.project = project;
   }
 
