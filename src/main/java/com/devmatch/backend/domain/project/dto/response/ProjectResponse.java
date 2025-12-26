@@ -1,4 +1,4 @@
-package com.devmatch.backend.domain.project.dto;
+package com.devmatch.backend.domain.project.dto.response;
 
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;

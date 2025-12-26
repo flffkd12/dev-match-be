@@ -1,9 +1,9 @@
 package com.devmatch.backend.domain.project.controller;
 
 import com.devmatch.backend.domain.auth.security.SecurityUser;
-import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
-import com.devmatch.backend.domain.project.dto.ProjectResponse;
-import com.devmatch.backend.domain.project.dto.ProjectUpdateRequest;
+import com.devmatch.backend.domain.project.dto.request.ProjectCreateRequest;
+import com.devmatch.backend.domain.project.dto.request.ProjectUpdateRequest;
+import com.devmatch.backend.domain.project.dto.response.ProjectResponse;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.response.ApiResponse;
 import com.devmatch.backend.global.response.SuccessCode;

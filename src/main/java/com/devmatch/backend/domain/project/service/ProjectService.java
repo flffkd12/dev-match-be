@@ -1,8 +1,8 @@
 package com.devmatch.backend.domain.project.service;
 
-import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
-import com.devmatch.backend.domain.project.dto.ProjectResponse;
-import com.devmatch.backend.domain.project.dto.ProjectUpdateRequest;
+import com.devmatch.backend.domain.project.dto.request.ProjectCreateRequest;
+import com.devmatch.backend.domain.project.dto.request.ProjectUpdateRequest;
+import com.devmatch.backend.domain.project.dto.response.ProjectResponse;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.repository.ProjectRepository;
 import com.devmatch.backend.domain.user.service.UserService;
