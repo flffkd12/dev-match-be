@@ -88,7 +88,7 @@ public class ApplicationService {
   }
 
   @Transactional(readOnly = true)
-  public List<ApplicationResponse> getApplicationsByUserId(Long applicantId) {
+  public List<ApplicationResponse> getApplicationsByApplicantId(Long applicantId) {
     return applicationRepository.findAllByApplicantId(applicantId).stream()
         .map(ApplicationResponse::from)
         .toList();
