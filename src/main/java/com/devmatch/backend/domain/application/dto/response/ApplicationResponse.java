@@ -11,8 +11,8 @@ public record ApplicationResponse(
     String nickname,
     ApplicationStatus status,
     LocalDateTime appliedAt,
-    List<String> techName,    // 지원자의 기술명
-    List<Integer> score       // 지원자의 기술 점수
+    List<String> techStacks,
+    List<Integer> techScores
 ) {
 
   public static ApplicationResponse from(Application application) {
@@ -22,10 +22,10 @@ public record ApplicationResponse(
         application.getStatus(),
         application.getCreatedAt(),
         application.getSkillScore().stream()
-            .map(SkillScore::getTechName)
+            .map(SkillScore::getTechStack)
             .toList(),
         application.getSkillScore().stream()
-            .map(SkillScore::getScore)
+            .map(SkillScore::getTechScore)
             .toList()
     );
   }

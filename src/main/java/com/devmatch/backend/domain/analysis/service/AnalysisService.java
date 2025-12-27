@@ -53,8 +53,8 @@ public class AnalysisService {
 
     prompt.append("지원자 기술 역량:\n");
     for (SkillScore skill : userSkills) {
-      prompt.append("- ").append(skill.getTechName())
-          .append(": ").append(skill.getScore()).append("/10점\n");
+      prompt.append("- ").append(skill.getTechStack())
+          .append(": ").append(skill.getTechScore()).append("/10점\n");
     }
 
     prompt.append("\n✨ 긍정적 평가 기준:\n");
@@ -174,8 +174,8 @@ public class AnalysisService {
 
       List<SkillScore> skills = application.getSkillScore();
       for (SkillScore skill : skills) {
-        prompt.append("  • ").append(skill.getTechName())
-            .append(": ").append(skill.getScore()).append("/10점\n");
+        prompt.append("  • ").append(skill.getTechStack())
+            .append(": ").append(skill.getTechScore()).append("/10점\n");
       }
       prompt.append("\n");
     }

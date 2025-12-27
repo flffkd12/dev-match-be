@@ -17,23 +17,20 @@ import lombok.NoArgsConstructor;
 @Table(name = "skill_scores")
 public class SkillScore extends BaseEntity {
 
-  // 이 기술점수가 속한 지원서의 고유 식별자
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "application_id")
   private Application application;
 
-  // 평가한 기술 명
-  @Column(name = "tech_name", nullable = false)
-  private String techName;
+  @Column(name = "tech_stack", nullable = false)
+  private String techStack;
 
-  // 기술 숙련도 점수(1점 = 초급 ~ 10점 = 전문가)
-  @Column(name = "score", nullable = false)
-  private int score;
+  @Column(name = "tech_score", nullable = false)
+  private Integer techScore;
 
   @Builder
-  public SkillScore(Application application, String techName, int score) {
+  public SkillScore(Application application, String techName, Integer score) {
     this.application = application;
-    this.techName = techName;
-    this.score = score;
+    this.techStack = techName;
+    this.techScore = score;
   }
 }
