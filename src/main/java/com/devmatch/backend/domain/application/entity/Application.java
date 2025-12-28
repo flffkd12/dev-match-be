@@ -34,22 +34,18 @@ public class Application extends BaseEntity {
   @JoinColumn(name = "applicant_id")
   private User applicant;
 
-  // 지원한 프로젝트의 고유 식별자
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "project_id")
   private Project project;
 
-  // 지원서의 승인 상태
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
-  private ApplicationStatus status = ApplicationStatus.PENDING;
+  private ApplicationStatus status;
 
-  // 지원자의 기술별 점수 저장
-  @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<SkillScore> skillScore = new ArrayList<>();
+  @OneToMany(mappedBy = "application", cascade = CascadeType.PERSIST, orphanRemoval = true)
+  private List<SkillScore> skillScore;
 
-  // 하나의 지원서에 대해 하나의 '지원자-프로젝트 적합도' 분석 결과
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(name = "analysis_result_id")
   private AnalysisResult analysisResult;
 
@@ -57,6 +53,8 @@ public class Application extends BaseEntity {
   public Application(User user, Project project) {
     this.applicant = user;
     this.project = project;
+    this.status = ApplicationStatus.PENDING;
+    this.skillScore = new ArrayList<>();
   }
 
   public void updateStatus(ApplicationStatus status) {

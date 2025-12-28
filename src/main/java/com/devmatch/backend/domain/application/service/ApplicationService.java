@@ -6,7 +6,6 @@ import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.repository.ApplicationRepository;
-import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.exception.CustomException;
@@ -30,11 +29,9 @@ public class ApplicationService {
       Long userId,
       ApplicationCreateRequest applicationCreateRequest
   ) {
-    Project project = projectService.findByProjectId(applicationCreateRequest.projectId());
-
     Application application = Application.builder()
         .user(userService.getUser(userId))
-        .project(project)
+        .project(projectService.findByProjectId(applicationCreateRequest.projectId()))
         .build();
 
     List<String> techStacks = applicationCreateRequest.techStacks();
