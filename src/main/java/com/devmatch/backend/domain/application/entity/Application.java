@@ -79,11 +79,4 @@ public class Application extends BaseEntity {
     }
     this.analysisResult = analysisResult;
   }
-
-  public void setSkillScores(List<SkillScore> skillScores) {
-    if (this.analysisResult != null) {
-      throw new CustomException(ErrorCode.APPLICATION_ALREADY_ANALYZED);
-    }
-    this.skillScores = skillScores;
-  }
 }
