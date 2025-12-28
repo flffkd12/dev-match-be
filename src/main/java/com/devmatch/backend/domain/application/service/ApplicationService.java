@@ -47,18 +47,10 @@ public class ApplicationService {
         .project(project)
         .build();
 
-    List<SkillScore> skillScores = new ArrayList<>();
     for (SkillRequest skill : applicationCreateRequest.skills()) {
-      SkillScore score = SkillScore.builder()
-          .application(application)
-          .techName(skill.techStack())
-          .score(skill.techScore())
-          .build();
-
-      skillScores.add(score);
+      application.addSkillScore(skill.techStack(), skill.techScore());
     }
 
-    application.setSkillScores(skillScores);
     return ApplicationResponse.from(applicationRepository.save(application));
   }
 

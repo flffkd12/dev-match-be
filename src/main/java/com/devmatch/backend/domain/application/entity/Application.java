@@ -57,6 +57,15 @@ public class Application extends BaseEntity {
     this.skillScores = new ArrayList<>();
   }
 
+  public void addSkillScore(String techStack, Integer techScore) {
+    SkillScore newSkillScore = SkillScore.builder()
+        .application(this)
+        .techName(techStack)
+        .score(techScore)
+        .build();
+    this.skillScores.add(newSkillScore);
+  }
+
   public void updateStatus(ApplicationStatus status) {
     if (status == this.status) {
       throw new CustomException(ErrorCode.APPLICATION_SAME_STATUS);
