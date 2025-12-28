@@ -1,6 +1,7 @@
 package com.devmatch.backend.domain.application.service;
 
 import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest;
+import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
@@ -34,15 +35,12 @@ public class ApplicationService {
         .project(projectService.findByProjectId(applicationCreateRequest.projectId()))
         .build();
 
-    List<String> techStacks = applicationCreateRequest.techStacks();
-    List<Integer> techScores = applicationCreateRequest.techScores();
-
     List<SkillScore> skillScores = new ArrayList<>();
-    for (int i = 0; i < techStacks.size(); i++) {
+    for (SkillRequest skill : applicationCreateRequest.skills()) {
       SkillScore score = SkillScore.builder()
           .application(application)
-          .techName(techStacks.get(i))
-          .score(techScores.get(i))
+          .techName(skill.techStack())
+          .score(skill.techScore())
           .build();
 
       skillScores.add(score);
