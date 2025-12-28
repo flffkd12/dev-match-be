@@ -7,6 +7,8 @@ import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.repository.ApplicationRepository;
+import com.devmatch.backend.domain.project.entity.Project;
+import com.devmatch.backend.domain.project.enums.ProjectStatus;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.exception.CustomException;
@@ -30,9 +32,19 @@ public class ApplicationService {
       Long userId,
       ApplicationCreateRequest applicationCreateRequest
   ) {
+    Project project = projectService.findByProjectId(applicationCreateRequest.projectId());
+
+    if (project.getStatus() != ProjectStatus.RECRUITING) {
+      throw new CustomException(ErrorCode.PROJECT_NOT_RECRUITING);
+    }
+
+    if (applicationRepository.existsByApplicantIdAndProjectId(userId, project.getId())) {
+      throw new CustomException(ErrorCode.APPLICATION_ALREADY_EXISTS);
+    }
+
     Application application = Application.builder()
         .user(userService.getUser(userId))
-        .project(projectService.findByProjectId(applicationCreateRequest.projectId()))
+        .project(project)
         .build();
 
     List<SkillScore> skillScores = new ArrayList<>();
@@ -46,9 +58,7 @@ public class ApplicationService {
       skillScores.add(score);
     }
 
-    // 멘토링 피드백: 세이브를 명시적으로 표현해주는 게 좋음
-    application.getSkillScore().addAll(skillScores);
-
+    application.setSkillScores(skillScores);
     return ApplicationResponse.from(applicationRepository.save(application));
   }
 

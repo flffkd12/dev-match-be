@@ -43,7 +43,7 @@ public class Application extends BaseEntity {
   private ApplicationStatus status;
 
   @OneToMany(mappedBy = "application", cascade = CascadeType.PERSIST, orphanRemoval = true)
-  private List<SkillScore> skillScore;
+  private List<SkillScore> skillScores;
 
   @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(name = "analysis_result_id")
@@ -54,7 +54,7 @@ public class Application extends BaseEntity {
     this.applicant = user;
     this.project = project;
     this.status = ApplicationStatus.PENDING;
-    this.skillScore = new ArrayList<>();
+    this.skillScores = new ArrayList<>();
   }
 
   public void updateStatus(ApplicationStatus status) {
@@ -69,5 +69,12 @@ public class Application extends BaseEntity {
       throw new CustomException(ErrorCode.APPLICATION_ALREADY_ANALYZED);
     }
     this.analysisResult = analysisResult;
+  }
+
+  public void setSkillScores(List<SkillScore> skillScores) {
+    if (this.analysisResult != null) {
+      throw new CustomException(ErrorCode.APPLICATION_ALREADY_ANALYZED);
+    }
+    this.skillScores = skillScores;
   }
 }

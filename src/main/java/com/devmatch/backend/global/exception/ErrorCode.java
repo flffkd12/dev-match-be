@@ -21,6 +21,7 @@ public enum ErrorCode {
   PROJECT_FULL_PEOPLE(HttpStatus.BAD_REQUEST, "PROJECT-400-2", "프로젝트 최대 정원에 도달해서 지원서를 승인할 수 없습니다."),
   PROJECT_TEAM_SIZE_INVALID(HttpStatus.BAD_REQUEST, "PROJECT-400-3",
       "프로젝트 최대 인원이 현재 인원보다 적을 수 없습니다."),
+  PROJECT_NOT_RECRUITING(HttpStatus.BAD_REQUEST, "PROJECT-400-4", "모집 중인 프로젝트가 아닙니다."),
   PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-404", "프로젝트를 찾을 수 없습니다."),
   PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PROJECT-403", "해당 프로젝트에 대한 권한이 없습니다."),
 
@@ -28,6 +29,7 @@ public enum ErrorCode {
   APPLICATION_ALREADY_ANALYZED(HttpStatus.BAD_REQUEST, "APPLICATION-400-1", "이미 분석된 결과가 있습니다."),
   APPLICATION_SAME_STATUS(HttpStatus.BAD_REQUEST, "APPLICATION-400-2",
       "현재 상태와 동일한 상태로 변경할 수 없습니다."),
+  APPLICATION_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "APPLICATION-400-3", "이미 해당 프로젝트에 지원하였습니다."),
   APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICATION-404", "지원서를 찾을 수 없습니다."),
 
   // 공통 오류

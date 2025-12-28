@@ -39,7 +39,7 @@ public class AnalysisService {
     Application application = applicationService.findByApplicationId(applicationId);
 
     Project project = application.getProject();
-    List<SkillScore> userSkills = application.getSkillScore();
+    List<SkillScore> userSkills = application.getSkillScores();
 
     StringBuilder prompt = new StringBuilder();
     prompt.append(
@@ -172,7 +172,7 @@ public class AnalysisService {
           .append(application.getApplicant().getNickname())
           .append("\n");
 
-      List<SkillScore> skills = application.getSkillScore();
+      List<SkillScore> skills = application.getSkillScores();
       for (SkillScore skill : skills) {
         prompt.append("  • ").append(skill.getTechStack())
             .append(": ").append(skill.getTechScore()).append("/10점\n");
