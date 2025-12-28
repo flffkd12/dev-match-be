@@ -23,11 +23,11 @@ public class UserService {
         : user.modify(nickname, profileImgUrl);
   }
 
-  public UserResponse getUserResponse(Long userId) {
-    return UserResponse.from(getUser(userId));
+  public UserResponse getUser(Long userId) {
+    return UserResponse.from(findByUserId(userId));
   }
 
-  public User getUser(Long userId) {
+  public User findByUserId(Long userId) {
     return userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
   }

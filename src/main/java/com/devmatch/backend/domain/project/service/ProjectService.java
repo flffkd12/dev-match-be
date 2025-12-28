@@ -31,7 +31,7 @@ public class ProjectService {
         .description(projectCreateRequest.description())
         .techStacks(projectCreateRequest.techStacks())
         .teamSize(projectCreateRequest.teamSize())
-        .creator(userService.getUser(userId))
+        .creator(userService.findByUserId(userId))
         .durationWeeks(projectCreateRequest.durationWeeks())
         .build();
 

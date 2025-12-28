@@ -23,7 +23,7 @@ public class UserController {
   public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
-    UserResponse user = userService.getUserResponse(securityUser.getUserId());
+    UserResponse user = userService.getUser(securityUser.getUserId());
     return ApiResponse.success(SuccessCode.USER_FETCH, user);
   }
 }

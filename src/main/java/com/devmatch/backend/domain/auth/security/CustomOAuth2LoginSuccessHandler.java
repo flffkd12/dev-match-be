@@ -34,7 +34,7 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
     log.info("OAuth2 authentication success handler initiated.");
 
     SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-    User user = userService.getUser(securityUser.getUserId());
+    User user = userService.findByUserId(securityUser.getUserId());
     log.debug("User authenticated: userId={}", user.getId());
 
     String accessToken = authTokenService.genAccessToken(user);

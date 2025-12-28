@@ -4,7 +4,6 @@ import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequ
 import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.entity.Application;
-import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.repository.ApplicationRepository;
 import com.devmatch.backend.domain.project.entity.Project;
@@ -13,7 +12,6 @@ import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.domain.user.service.UserService;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,7 +41,7 @@ public class ApplicationService {
     }
 
     Application application = Application.builder()
-        .user(userService.getUser(userId))
+        .user(userService.findByUserId(userId))
         .project(project)
         .build();
 

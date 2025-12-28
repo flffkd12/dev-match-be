@@ -51,7 +51,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     if (accessToken != null) {
       try {
         Map<String, Object> payload = authTokenService.getPayload(accessToken);
-        setAuthenticationContext(userService.getUser((Long) payload.get("userId")));
+        setAuthenticationContext(userService.findByUserId((Long) payload.get("userId")));
       } catch (ExpiredJwtException e) {
         handleExpiredAccessToken(request, response);
       } catch (Exception e) {
