@@ -5,6 +5,8 @@ import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.common.BaseEntity;
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,19 +59,16 @@ public class Application extends BaseEntity {
     this.project = project;
   }
 
-  public void changeStatus(ApplicationStatus status) {
+  public void updateStatus(ApplicationStatus status) {
     if (status == this.status) {
-      throw new IllegalArgumentException(
-          "현재 상태(%s)와 동일한 상태(%s)로 변경할 수 없습니다".formatted(this.status, status));
+      throw new CustomException(ErrorCode.APPLICATION_SAME_STATUS);
     }
     this.status = status;
   }
 
   public void setAnalysisResult(AnalysisResult analysisResult) {
     if (this.analysisResult != null) {
-      throw new IllegalArgumentException(
-          "현재 지원서(지원서 %s번)에 분석 결과가(분석 결과 %s번) 이미 존재합니다".formatted(this.getId(),
-              analysisResult.getId()));
+      throw new CustomException(ErrorCode.APPLICATION_ALREADY_ANALYZED);
     }
     this.analysisResult = analysisResult;
   }

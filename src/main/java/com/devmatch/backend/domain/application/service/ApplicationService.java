@@ -67,7 +67,7 @@ public class ApplicationService {
       application.getProject().decreaseCurrentTeamSize();
     }
 
-    application.changeStatus(newStatus);
+    application.updateStatus(newStatus);
   }
 
   public void deleteApplication(Long applicationId) {

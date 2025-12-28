@@ -25,6 +25,9 @@ public enum ErrorCode {
   PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PROJECT-403", "해당 프로젝트에 대한 권한이 없습니다."),
 
   // 지원서 관련 오류
+  APPLICATION_ALREADY_ANALYZED(HttpStatus.BAD_REQUEST, "APPLICATION-400-1", "이미 분석된 결과가 있습니다."),
+  APPLICATION_SAME_STATUS(HttpStatus.BAD_REQUEST, "APPLICATION-400-2",
+      "현재 상태와 동일한 상태로 변경할 수 없습니다."),
   APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICATION-404", "지원서를 찾을 수 없습니다."),
 
   // 공통 오류
