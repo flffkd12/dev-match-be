@@ -21,10 +21,10 @@ public record ApplicationResponse(
         application.getApplicant().getNickname(),
         application.getStatus(),
         application.getCreatedAt(),
-        application.getSkillScore().stream()
+        application.getSkillScores().stream()
             .map(SkillScore::getTechStack)
             .toList(),
-        application.getSkillScore().stream()
+        application.getSkillScores().stream()
             .map(SkillScore::getTechScore)
             .toList()
     );
