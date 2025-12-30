@@ -10,42 +10,41 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
   private final UserRepository userRepository;
 
-  @Transactional
   public User modifyOrJoin(String oauthId, String nickname, String profileImgUrl) {
-    User user = findByOauthId(oauthId);
+    User user = userRepository.findByOauthId(oauthId).orElse(null);
     return user == null ? join(oauthId, nickname, profileImgUrl)
         : user.modify(nickname, profileImgUrl);
-  }
-
-  public UserResponse getUser(Long userId) {
-    return UserResponse.from(findByUserId(userId));
-  }
-
-  public User findByUserId(Long userId) {
-    return userRepository.findById(userId)
-        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-  }
-
-  public User getUserByRefreshToken(String refreshToken) {
-    return userRepository.findByRefreshToken(refreshToken)
-        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
-  }
-
-  public long count() {
-    return userRepository.count();
   }
 
   public User join(String oauthId, String nickname, String profileImgUrl) {
     return userRepository.save(new User(oauthId, nickname, profileImgUrl));
   }
 
-  private User findByOauthId(String oauthId) {
-    return userRepository.findByOauthId(oauthId).orElse(null);
+  @Transactional(readOnly = true)
+  public UserResponse getUser(Long userId) {
+    return UserResponse.from(findByUserId(userId));
+  }
+
+  @Transactional(readOnly = true)
+  public User findByUserId(Long userId) {
+    return userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+  }
+
+  @Transactional(readOnly = true)
+  public User getUserByRefreshToken(String refreshToken) {
+    return userRepository.findByRefreshToken(refreshToken)
+        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
+  }
+
+  @Transactional(readOnly = true)
+  public long count() {
+    return userRepository.count();
   }
 }
