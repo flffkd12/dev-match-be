@@ -54,7 +54,8 @@ public class ProjectService {
 
     validateRoleAssignmentCreation(project, approvedApplications, creatorId);
 
-    String roleAssignment = analysisService.createProjectRoleAssignment(project);
+    String roleAssignment = analysisService.createProjectRoleAssignment(project,
+        approvedApplications);
     project.allocateRole(roleAssignment);
     return ProjectResponse.from(project);
   }

@@ -4,8 +4,6 @@ import com.devmatch.backend.domain.analysis.dto.Analysis;
 import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
-import com.devmatch.backend.domain.application.enums.ApplicationStatus;
-import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.project.entity.Project;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,11 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AnalysisService {
 
-  private final ApplicationService applicationService;
   private final ChatModel chatModel;
 
   public Analysis createAnalysis(Project project, List<SkillRequest> userSkills) {
-
     StringBuilder prompt = new StringBuilder();
     prompt.append(
         "당신은 친화적이고 관대한 IT 프로젝트 전문 분석가입니다. 팀 프로젝트의 협업 가치를 중시하며, 지원자의 잠재력을 긍정적으로 평가해주세요.\n\n");
@@ -112,20 +108,10 @@ public class AnalysisService {
     return new Analysis(score, reason);
   }
 
-  public String createProjectRoleAssignment(Project project) {
-    List<Application> approvedApplications = applicationService.findByProjectIdAndStatus(
-        project.getId(),
-        ApplicationStatus.APPROVED
-    );
-
-    if (approvedApplications.size() != project.getTeamSize()) {
-      throw new IllegalArgumentException(
-          "프로젝트 필요 팀원 수만큼 승인된 지원자가 모이지 않았습니다. " +
-              "프로젝트 팀원 수: " + project.getTeamSize() +
-              ", 승인된 지원자 수: " + approvedApplications.size()
-      );
-    }
-
+  public String createProjectRoleAssignment(
+      Project project,
+      List<Application> approvedApplications
+  ) {
     StringBuilder prompt = new StringBuilder();
 
     // 프로젝트 컨텍스트 분석
