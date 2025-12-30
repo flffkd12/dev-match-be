@@ -13,17 +13,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "analysis_results")
+@Table(name = "analyses")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnalysisResult extends BaseEntity {
+public class Analysis extends BaseEntity {
 
-  @OneToOne(mappedBy = "analysisResult")
+  @OneToOne(mappedBy = "analysis")
   private Application application;
 
-  @Column(name = "compatibility_score", precision = 5, scale = 2, nullable = false)
+  @Column(precision = 5, scale = 2, nullable = false)
   private BigDecimal compatibilityScore;
 
   @Column(columnDefinition = "TEXT", nullable = false)

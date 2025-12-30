@@ -1,6 +1,6 @@
 package com.devmatch.backend.domain.application.entity;
 
-import com.devmatch.backend.domain.analysis.entity.AnalysisResult;
+import com.devmatch.backend.domain.analysis.entity.Analysis;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.user.entity.User;
@@ -46,8 +46,8 @@ public class Application extends BaseEntity {
   private List<SkillScore> skillScores;
 
   @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
-  @JoinColumn(name = "analysis_result_id")
-  private AnalysisResult analysisResult;
+  @JoinColumn(name = "analysis_id")
+  private Analysis analysis;
 
   @Builder
   public Application(User user, Project project) {
@@ -73,10 +73,10 @@ public class Application extends BaseEntity {
     this.status = status;
   }
 
-  public void setAnalysisResult(AnalysisResult analysisResult) {
-    if (this.analysisResult != null) {
+  public void setAnalysis(Analysis analysis) {
+    if (this.analysis != null) {
       throw new CustomException(ErrorCode.APPLICATION_ALREADY_ANALYZED);
     }
-    this.analysisResult = analysisResult;
+    this.analysis = analysis;
   }
 }

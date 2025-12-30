@@ -25,6 +25,10 @@ public enum SuccessCode {
   APPLICATION_UPDATE_STATUS(HttpStatus.OK, "APPLICATION-200-4", "지원서 상태 업데이트 성공"),
   APPLICATION_CREATE(HttpStatus.CREATED, "APPLICATION-201", "지원서 생성 성공"),
   APPLICATION_DELETE(HttpStatus.NO_CONTENT, "APPLICATION-204", "지원서 삭제 성공"),
+
+  ANALYSIS_FIND_ONE(HttpStatus.OK, "ANALYSIS-200", "지원서 분석 결과 조회 성공"),
+  ANALYSIS_APPLICATION_ANALYZED(HttpStatus.CREATED, "ANALYSIS-201-1", "지원서 분석 성공"),
+  ANALYSIS_ROLE_ASSIGNED(HttpStatus.CREATED, "ANALYSIS-201-2", "프로젝트 역할 분배 성공"),
   ;
 
   private final HttpStatus httpStatus;
