@@ -1,6 +1,5 @@
 package com.devmatch.backend.domain.application.entity;
 
-import com.devmatch.backend.domain.analysis.entity.Analysis;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.user.entity.User;
@@ -16,8 +15,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -45,16 +44,25 @@ public class Application extends BaseEntity {
   @OneToMany(mappedBy = "application", cascade = CascadeType.PERSIST, orphanRemoval = true)
   private List<SkillScore> skillScores;
 
-  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
-  @JoinColumn(name = "analysis_id")
-  private Analysis analysis;
+  @Column(precision = 5, scale = 2, nullable = false)
+  private BigDecimal compatibilityScore;
+
+  @Column(columnDefinition = "TEXT", nullable = false)
+  private String compatibilityReason;
 
   @Builder
-  public Application(User user, Project project) {
+  public Application(
+      User user,
+      Project project,
+      BigDecimal compatibilityScore,
+      String compatibilityReason
+  ) {
     this.applicant = user;
     this.project = project;
     this.status = ApplicationStatus.PENDING;
     this.skillScores = new ArrayList<>();
+    this.compatibilityScore = compatibilityScore;
+    this.compatibilityReason = compatibilityReason;
   }
 
   public void addSkillScore(String techStack, Integer techScore) {
@@ -71,12 +79,5 @@ public class Application extends BaseEntity {
       throw new CustomException(ErrorCode.APPLICATION_SAME_STATUS);
     }
     this.status = status;
-  }
-
-  public void setAnalysis(Analysis analysis) {
-    if (this.analysis != null) {
-      throw new CustomException(ErrorCode.APPLICATION_ALREADY_ANALYZED);
-    }
-    this.analysis = analysis;
   }
 }

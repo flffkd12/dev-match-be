@@ -3,6 +3,7 @@ package com.devmatch.backend.domain.application.dto.response;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,9 @@ public record ApplicationResponse(
     ApplicationStatus status,
     LocalDateTime appliedAt,
     List<String> techStacks,
-    List<Integer> techScores
+    List<Integer> techScores,
+    BigDecimal compatibilityScore,
+    String compatibilityReason
 ) {
 
   public static ApplicationResponse from(Application application) {
@@ -26,7 +29,9 @@ public record ApplicationResponse(
             .toList(),
         application.getSkillScores().stream()
             .map(SkillScore::getTechScore)
-            .toList()
+            .toList(),
+        application.getCompatibilityScore(),
+        application.getCompatibilityReason()
     );
   }
 }

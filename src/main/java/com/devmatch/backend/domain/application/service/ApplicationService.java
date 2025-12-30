@@ -1,5 +1,7 @@
 package com.devmatch.backend.domain.application.service;
 
+import com.devmatch.backend.domain.analysis.dto.Analysis;
+import com.devmatch.backend.domain.analysis.service.AnalysisService;
 import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest;
 import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApplicationService {
 
   private final ApplicationRepository applicationRepository;
+  private final AnalysisService analysisService;
   private final ProjectService projectService;
   private final UserService userService;
 
@@ -40,9 +43,13 @@ public class ApplicationService {
       throw new CustomException(ErrorCode.APPLICATION_ALREADY_EXISTS);
     }
 
+    Analysis analysis = analysisService.createAnalysis(project, applicationCreateRequest.skills());
+
     Application application = Application.builder()
         .user(userService.findByUserId(userId))
         .project(project)
+        .compatibilityScore(analysis.compatibilityScore())
+        .compatibilityReason(analysis.compatibilityReason())
         .build();
 
     for (SkillRequest skill : applicationCreateRequest.skills()) {

@@ -1,16 +1,13 @@
 package com.devmatch.backend.domain.analysis.service;
 
-import com.devmatch.backend.domain.analysis.dto.AnalysisResponse;
-import com.devmatch.backend.domain.analysis.entity.Analysis;
-import com.devmatch.backend.domain.analysis.repository.AnalysisRepository;
+import com.devmatch.backend.domain.analysis.dto.Analysis;
+import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.service.ProjectService;
-import com.devmatch.backend.global.exception.CustomException;
-import com.devmatch.backend.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,28 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AnalysisService {
 
-  private final AnalysisRepository analysisRepository;
   private final ApplicationService applicationService;
   private final ProjectService projectService;
 
   private final ChatModel chatModel;
 
-  @Transactional(readOnly = true)
-  public AnalysisResponse getAnalysis(Long applicationId) {
-    return AnalysisResponse.from(findByApplicationId(applicationId));
-  }
-
-  @Transactional(readOnly = true)
-  public Analysis findByApplicationId(Long applicationId) {
-    return analysisRepository.findByApplicationId(applicationId)
-        .orElseThrow(() -> new CustomException(ErrorCode.ANALYSIS_NOT_FOUND));
-  }
-
-  public AnalysisResponse createAnalysis(Long applicationId) {
-    Application application = applicationService.findByApplicationId(applicationId);
-
-    Project project = application.getProject();
-    List<SkillScore> userSkills = application.getSkillScores();
+  public Analysis createAnalysis(Project project, List<SkillRequest> userSkills) {
 
     StringBuilder prompt = new StringBuilder();
     prompt.append(
@@ -57,9 +38,9 @@ public class AnalysisService {
     prompt.append("- 필요 기술: ").append(project.getTechStacks()).append("\n\n");
 
     prompt.append("지원자 기술 역량:\n");
-    for (SkillScore skill : userSkills) {
-      prompt.append("- ").append(skill.getTechStack())
-          .append(": ").append(skill.getTechScore()).append("/10점\n");
+    for (SkillRequest skill : userSkills) {
+      prompt.append("- ").append(skill.techStack())
+          .append(": ").append(skill.techStack()).append("/10점\n");
     }
 
     prompt.append("\n✨ 긍정적 평가 기준:\n");
@@ -131,15 +112,7 @@ public class AnalysisService {
       throw new IllegalArgumentException("이유가 비어있습니다. 응답: " + aiResponse);
     }
 
-    Analysis result = Analysis.builder()
-        .application(application)
-        .compatibilityScore(score)
-        .compatibilityReason(reason)
-        .build();
-
-    applicationService.findByApplicationId(applicationId).setAnalysis(result);
-
-    return AnalysisResponse.from(analysisRepository.save(result));
+    return new Analysis(score, reason);
   }
 
   public String createProjectRoleAssignment(Long projectId) {
