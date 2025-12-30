@@ -30,23 +30,16 @@ public class ApplicationService {
   private final UserService userService;
 
   public ApplicationResponse createApplication(
-      Long userId,
+      Long applicantId,
       ApplicationCreateRequest applicationCreateRequest
   ) {
     Project project = projectService.findByProjectId(applicationCreateRequest.projectId());
-
-    if (project.getStatus() != ProjectStatus.RECRUITING) {
-      throw new CustomException(ErrorCode.PROJECT_NOT_RECRUITING);
-    }
-
-    if (applicationRepository.existsByApplicantIdAndProjectId(userId, project.getId())) {
-      throw new CustomException(ErrorCode.APPLICATION_ALREADY_EXISTS);
-    }
+    validateApplicable(project, applicantId);
 
     Analysis analysis = analysisService.createAnalysis(project, applicationCreateRequest.skills());
 
     Application application = Application.builder()
-        .user(userService.findByUserId(userId))
+        .user(userService.findByUserId(applicantId))
         .project(project)
         .compatibilityScore(analysis.compatibilityScore())
         .compatibilityReason(analysis.compatibilityReason())
@@ -110,5 +103,15 @@ public class ApplicationService {
   @Transactional(readOnly = true)
   public List<Application> findByProjectIdAndStatus(Long projectId, ApplicationStatus status) {
     return applicationRepository.findByProjectIdAndStatus(projectId, status);
+  }
+
+  private void validateApplicable(Project project, Long applicantId) {
+    if (project.getStatus() != ProjectStatus.RECRUITING) {
+      throw new CustomException(ErrorCode.PROJECT_NOT_RECRUITING);
+    }
+
+    if (applicationRepository.existsByApplicantIdAndProjectId(applicantId, project.getId())) {
+      throw new CustomException(ErrorCode.APPLICATION_ALREADY_EXISTS);
+    }
   }
 }
