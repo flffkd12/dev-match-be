@@ -129,4 +129,11 @@ public class Project extends BaseEntity {
     this.durationWeeks = durationWeeks;
     this.roleAssignment = roleAssignment;
   }
+
+  public void allocateRole(String roleAssignment) {
+    if (this.status != ProjectStatus.COMPLETED) {
+      throw new CustomException(ErrorCode.PROJECT_NOT_COMPLETED);
+    }
+    this.roleAssignment = roleAssignment;
+  }
 }
