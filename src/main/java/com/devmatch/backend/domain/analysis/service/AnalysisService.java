@@ -1,7 +1,7 @@
 package com.devmatch.backend.domain.analysis.service;
 
 import com.devmatch.backend.domain.analysis.dto.Analysis;
-import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
+import com.devmatch.backend.domain.application.dto.Skill;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.project.entity.Project;
@@ -19,7 +19,7 @@ public class AnalysisService {
 
   private final ChatModel chatModel;
 
-  public Analysis createAnalysis(Project project, List<SkillRequest> userSkills) {
+  public Analysis createAnalysis(Project project, List<Skill> applicantSkills) {
     StringBuilder prompt = new StringBuilder();
     prompt.append(
         "당신은 친화적이고 관대한 IT 프로젝트 전문 분석가입니다. 팀 프로젝트의 협업 가치를 중시하며, 지원자의 잠재력을 긍정적으로 평가해주세요.\n\n");
@@ -31,7 +31,7 @@ public class AnalysisService {
     prompt.append("- 필요 기술: ").append(project.getTechStacks()).append("\n\n");
 
     prompt.append("지원자 기술 역량:\n");
-    for (SkillRequest skill : userSkills) {
+    for (Skill skill : applicantSkills) {
       prompt.append("- ").append(skill.techStack())
           .append(": ").append(skill.techStack()).append("/10점\n");
     }

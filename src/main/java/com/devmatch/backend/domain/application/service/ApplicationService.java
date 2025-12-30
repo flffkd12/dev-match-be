@@ -2,8 +2,8 @@ package com.devmatch.backend.domain.application.service;
 
 import com.devmatch.backend.domain.analysis.dto.Analysis;
 import com.devmatch.backend.domain.analysis.service.AnalysisService;
+import com.devmatch.backend.domain.application.dto.Skill;
 import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest;
-import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest.SkillRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
@@ -45,7 +45,7 @@ public class ApplicationService {
         .compatibilityReason(analysis.compatibilityReason())
         .build();
 
-    for (SkillRequest skill : applicationCreateRequest.skills()) {
+    for (Skill skill : applicationCreateRequest.skills()) {
       application.addSkillScore(skill.techStack(), skill.techScore());
     }
 
