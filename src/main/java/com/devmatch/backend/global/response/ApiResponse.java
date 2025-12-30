@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 @JsonInclude(Include.NON_NULL)
 public record ApiResponse<T>(String resultCode, String message, T content) {
 
-  private final static String SUCCESS_CODE = "200";
-
   public static <T> ResponseEntity<ApiResponse<T>> success(SuccessCode code) {
     return success(code, null);
   }
@@ -23,18 +21,6 @@ public record ApiResponse<T>(String resultCode, String message, T content) {
             .content(content)
             .build()
     );
-  }
-
-  public static <T> ApiResponse<T> success(String message) {
-    return success(message, null);
-  }
-
-  public static <T> ApiResponse<T> success(String message, T content) {
-    return ApiResponse.<T>builder()
-        .resultCode(SUCCESS_CODE)
-        .message(message)
-        .content(content)
-        .build();
   }
 
   public static <T> ApiResponse<T> fail(String resultCode, String message) {
