@@ -40,6 +40,15 @@ public class ProjectController {
         projectService.createProject(securityUser.getUserId(), projectCreateRequest));
   }
 
+  @PostMapping("/{projectId}")
+  public ResponseEntity<ApiResponse<ProjectResponse>> createProjectRoleAssignment(
+      @PathVariable Long projectId,
+      @AuthenticationPrincipal SecurityUser securityUser
+  ) {
+    return ApiResponse.success(SuccessCode.PROJECT_ROLE_ASSIGNED,
+        projectService.createProjectRoleAssignment(securityUser.getUserId(), projectId));
+  }
+
   @GetMapping
   public ResponseEntity<ApiResponse<Page<ProjectResponse>>> getAllProjects(
       @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable

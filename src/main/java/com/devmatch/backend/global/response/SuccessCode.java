@@ -16,7 +16,8 @@ public enum SuccessCode {
   PROJECT_FIND_MINE(HttpStatus.OK, "PROJECT-200-2", "내 프로젝트 목록 조회 성공"),
   PROJECT_FIND_ONE(HttpStatus.OK, "PROJECT-200-3", "프로젝트 단일 조회 성공"),
   PROJECT_UPDATE(HttpStatus.OK, "PROJECT-200-4", "프로젝트 수정 성공"),
-  PROJECT_CREATE(HttpStatus.CREATED, "PROJECT-201", "프로젝트 생성 성공"),
+  PROJECT_CREATE(HttpStatus.CREATED, "PROJECT-201-1", "프로젝트 생성 성공"),
+  PROJECT_ROLE_ASSIGNED(HttpStatus.CREATED, "PROJECT-201-2", "프로젝트 역할 배분 성공"),
   PROJECT_DELETE(HttpStatus.NO_CONTENT, "PROJECT-204", "프로젝트 삭제 성공"),
 
   APPLICATION_APPLIED_TO_PROJECT(HttpStatus.OK, "APPLICATION-200-1", "프로젝트의 지원서 목록 조회 성공"),
@@ -25,8 +26,6 @@ public enum SuccessCode {
   APPLICATION_UPDATE_STATUS(HttpStatus.OK, "APPLICATION-200-4", "지원서 상태 업데이트 성공"),
   APPLICATION_CREATE(HttpStatus.CREATED, "APPLICATION-201", "지원서 생성 성공"),
   APPLICATION_DELETE(HttpStatus.NO_CONTENT, "APPLICATION-204", "지원서 삭제 성공"),
-
-  ANALYSIS_ROLE_ASSIGNED(HttpStatus.CREATED, "ANALYSIS-201-2", "프로젝트 역할 분배 성공"),
   ;
 
   private final HttpStatus httpStatus;

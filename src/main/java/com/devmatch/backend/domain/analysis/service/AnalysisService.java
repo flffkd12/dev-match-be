@@ -7,7 +7,6 @@ import com.devmatch.backend.domain.application.entity.SkillScore;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.project.entity.Project;
-import com.devmatch.backend.domain.project.service.ProjectService;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnalysisService {
 
   private final ApplicationService applicationService;
-  private final ProjectService projectService;
-
   private final ChatModel chatModel;
 
   public Analysis createAnalysis(Project project, List<SkillRequest> userSkills) {
@@ -115,12 +112,9 @@ public class AnalysisService {
     return new Analysis(score, reason);
   }
 
-  public String createProjectRoleAssignment(Long projectId) {
-
-    Project project = projectService.findByProjectId(projectId);
-
+  public String createProjectRoleAssignment(Project project) {
     List<Application> approvedApplications = applicationService.findByProjectIdAndStatus(
-        projectId,
+        project.getId(),
         ApplicationStatus.APPROVED
     );
 
