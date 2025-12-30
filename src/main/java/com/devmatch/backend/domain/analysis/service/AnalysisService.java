@@ -1,6 +1,7 @@
 package com.devmatch.backend.domain.analysis.service;
 
-import com.devmatch.backend.domain.analysis.entity.AnalysisResult;
+import com.devmatch.backend.domain.analysis.dto.AnalysisResponse;
+import com.devmatch.backend.domain.analysis.entity.Analysis;
 import com.devmatch.backend.domain.analysis.repository.AnalysisRepository;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.entity.SkillScore;
@@ -8,9 +9,10 @@ import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.service.ProjectService;
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AnalysisService {
 
   private final AnalysisRepository analysisRepository;
@@ -27,15 +30,17 @@ public class AnalysisService {
   private final ChatModel chatModel;
 
   @Transactional(readOnly = true)
-  public AnalysisResult getAnalysisResult(Long applicationId) {
-    return analysisRepository.findByApplicationId(applicationId)
-        .orElseThrow(() -> new NoSuchElementException(
-            "분석 결과를 찾을 수 없습니다. applicationId: " + applicationId
-        ));
+  public AnalysisResponse getAnalysis(Long applicationId) {
+    return AnalysisResponse.from(findByApplicationId(applicationId));
   }
 
-  @Transactional
-  public AnalysisResult createAnalysisResult(Long applicationId) {
+  @Transactional(readOnly = true)
+  public Analysis findByApplicationId(Long applicationId) {
+    return analysisRepository.findByApplicationId(applicationId)
+        .orElseThrow(() -> new CustomException(ErrorCode.ANALYSIS_NOT_FOUND));
+  }
+
+  public AnalysisResponse createAnalysis(Long applicationId) {
     Application application = applicationService.findByApplicationId(applicationId);
 
     Project project = application.getProject();
@@ -126,19 +131,18 @@ public class AnalysisService {
       throw new IllegalArgumentException("이유가 비어있습니다. 응답: " + aiResponse);
     }
 
-    AnalysisResult result = AnalysisResult.builder()
+    Analysis result = Analysis.builder()
         .application(application)
         .compatibilityScore(score)
         .compatibilityReason(reason)
         .build();
 
-    applicationService.findByApplicationId(applicationId).setAnalysisResult(result);
+    applicationService.findByApplicationId(applicationId).setAnalysis(result);
 
-    return analysisRepository.save(result);
+    return AnalysisResponse.from(analysisRepository.save(result));
   }
 
-  @Transactional(readOnly = true)
-  public String createTeamRoleAssignment(Long projectId) {
+  public String createProjectRoleAssignment(Long projectId) {
 
     Project project = projectService.findByProjectId(projectId);
 
