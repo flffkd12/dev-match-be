@@ -5,6 +5,7 @@ import com.devmatch.backend.domain.application.dto.request.ApplicationStatusUpda
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.auth.security.SecurityUser;
+import com.devmatch.backend.domain.project.facade.ProjectRecruitmentFacade;
 import com.devmatch.backend.global.response.ApiResponse;
 import com.devmatch.backend.global.response.SuccessCode;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApplicationController {
 
   private final ApplicationService applicationService;
+  private final ProjectRecruitmentFacade projectRecruitmentFacade;
 
   @PostMapping
   public ResponseEntity<ApiResponse<ApplicationResponse>> createApplication(
@@ -35,7 +37,7 @@ public class ApplicationController {
       @Valid @RequestBody ApplicationCreateRequest applicationCreateRequest
   ) {
     return ApiResponse.success(SuccessCode.APPLICATION_CREATE,
-        applicationService.createApplication(securityUser.getUserId(), applicationCreateRequest));
+        projectRecruitmentFacade.createApplication(securityUser.getUserId(), applicationCreateRequest));
   }
 
   @GetMapping

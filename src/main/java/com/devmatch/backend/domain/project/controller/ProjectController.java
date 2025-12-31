@@ -4,6 +4,7 @@ import com.devmatch.backend.domain.auth.security.SecurityUser;
 import com.devmatch.backend.domain.project.dto.request.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.request.ProjectUpdateRequest;
 import com.devmatch.backend.domain.project.dto.response.ProjectResponse;
+import com.devmatch.backend.domain.project.facade.ProjectRecruitmentFacade;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.global.response.ApiResponse;
 import com.devmatch.backend.global.response.SuccessCode;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProjectController {
 
   private final ProjectService projectService;
+  private final ProjectRecruitmentFacade projectRecruitmentFacade;
 
   @PostMapping
   public ResponseEntity<ApiResponse<ProjectResponse>> createProject(
@@ -46,7 +48,7 @@ public class ProjectController {
       @AuthenticationPrincipal SecurityUser securityUser
   ) {
     return ApiResponse.success(SuccessCode.PROJECT_ROLE_ASSIGNED,
-        projectService.createProjectRoleAssignment(securityUser.getUserId(), projectId));
+        projectRecruitmentFacade.createProjectRoleAssignment(securityUser.getUserId(), projectId));
   }
 
   @GetMapping

@@ -1,9 +1,6 @@
 package com.devmatch.backend.domain.project.service;
 
-import com.devmatch.backend.domain.analysis.service.AnalysisService;
 import com.devmatch.backend.domain.application.entity.Application;
-import com.devmatch.backend.domain.application.enums.ApplicationStatus;
-import com.devmatch.backend.domain.application.service.ApplicationService;
 import com.devmatch.backend.domain.project.dto.request.ProjectCreateRequest;
 import com.devmatch.backend.domain.project.dto.request.ProjectUpdateRequest;
 import com.devmatch.backend.domain.project.dto.response.ProjectResponse;
@@ -24,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProjectService {
 
-  private final AnalysisService analysisService;
-  private final ApplicationService applicationService;
   private final UserService userService;
   private final ProjectRepository projectRepository;
 
@@ -45,17 +40,13 @@ public class ProjectService {
     return ProjectResponse.from(projectRepository.save(project));
   }
 
-  public ProjectResponse createProjectRoleAssignment(Long creatorId, Long projectId) {
-    Project project = findByProjectId(projectId);
-    List<Application> approvedApplications = applicationService.findByProjectIdAndStatus(
-        projectId,
-        ApplicationStatus.APPROVED
-    );
-
+  public ProjectResponse createProjectRoleAssignment(
+      Long creatorId,
+      Project project,
+      List<Application> approvedApplications,
+      String roleAssignment
+  ) {
     validateRoleAssignmentCreation(project, approvedApplications, creatorId);
-
-    String roleAssignment = analysisService.createProjectRoleAssignment(project,
-        approvedApplications);
     project.allocateRole(roleAssignment);
     return ProjectResponse.from(project);
   }
