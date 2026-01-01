@@ -1,17 +1,14 @@
 package com.devmatch.backend.domain.application.service;
 
 import com.devmatch.backend.domain.analysis.dto.Analysis;
-import com.devmatch.backend.domain.analysis.service.AnalysisService;
 import com.devmatch.backend.domain.application.dto.Skill;
-import com.devmatch.backend.domain.application.dto.request.ApplicationCreateRequest;
 import com.devmatch.backend.domain.application.dto.response.ApplicationResponse;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.application.enums.ApplicationStatus;
 import com.devmatch.backend.domain.application.repository.ApplicationRepository;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.enums.ProjectStatus;
-import com.devmatch.backend.domain.project.service.ProjectService;
-import com.devmatch.backend.domain.user.service.UserService;
+import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
 import java.util.List;
@@ -25,27 +22,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApplicationService {
 
   private final ApplicationRepository applicationRepository;
-  private final AnalysisService analysisService;
-  private final ProjectService projectService;
-  private final UserService userService;
 
   public ApplicationResponse createApplication(
-      Long applicantId,
-      ApplicationCreateRequest applicationCreateRequest
+      User applicant,
+      Project project,
+      List<Skill> skills,
+      Analysis analysis
   ) {
-    Project project = projectService.findByProjectId(applicationCreateRequest.projectId());
-    validateApplicable(project, applicantId);
-
-    Analysis analysis = analysisService.createAnalysis(project, applicationCreateRequest.skills());
+    validateApplicable(project, applicant);
 
     Application application = Application.builder()
-        .user(userService.findByUserId(applicantId))
+        .user(applicant)
         .project(project)
         .compatibilityScore(analysis.compatibilityScore())
         .compatibilityReason(analysis.compatibilityReason())
         .build();
 
-    for (Skill skill : applicationCreateRequest.skills()) {
+    for (Skill skill : skills) {
       application.addSkillScore(skill.techStack(), skill.techScore());
     }
 
@@ -105,12 +98,12 @@ public class ApplicationService {
     return applicationRepository.findByProjectIdAndStatus(projectId, status);
   }
 
-  private void validateApplicable(Project project, Long applicantId) {
+  private void validateApplicable(Project project, User applicant) {
     if (project.getStatus() != ProjectStatus.RECRUITING) {
       throw new CustomException(ErrorCode.PROJECT_NOT_RECRUITING);
     }
 
-    if (applicationRepository.existsByApplicantIdAndProjectId(applicantId, project.getId())) {
+    if (applicationRepository.existsByApplicantIdAndProjectId(applicant.getId(), project.getId())) {
       throw new CustomException(ErrorCode.APPLICATION_ALREADY_EXISTS);
     }
   }
