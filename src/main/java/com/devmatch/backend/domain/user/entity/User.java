@@ -7,6 +7,8 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +17,7 @@ import org.springframework.util.StringUtils;
 @Entity
 @Table(name = "users")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
   @Column(unique = true)
@@ -27,6 +29,7 @@ public class User extends BaseEntity {
   private String nickname;
   private String profileImgUrl;
 
+  @Builder
   public User(String oAuthId, String nickname, String profileImgUrl) {
     this.oauthId = oAuthId;
     this.refreshToken = UUID.randomUUID().toString();

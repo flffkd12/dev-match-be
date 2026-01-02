@@ -23,7 +23,12 @@ public class UserService {
   }
 
   public User join(String oauthId, String nickname, String profileImgUrl) {
-    return userRepository.save(new User(oauthId, nickname, profileImgUrl));
+    User user = User.builder()
+        .oAuthId(oauthId)
+        .nickname(nickname)
+        .profileImgUrl(profileImgUrl)
+        .build();
+    return userRepository.save(user);
   }
 
   @Transactional(readOnly = true)
