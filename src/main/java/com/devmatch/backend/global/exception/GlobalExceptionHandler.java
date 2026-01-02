@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,16 +17,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ApiResponse<Void>> handleCustomException(CustomException e) {
-    String logMessage = e.getDebugMessage() != null ? e.getMessage() + " [Debug: " + e.getDebugMessage() + "]" : e.getMessage();
+    String logMessage = e.getDebugMessage() != null ?
+        e.getMessage() + " [Debug: " + e.getDebugMessage() + "]" : e.getMessage();
 
-    if (e.getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
+    if (e.getErrorCode().getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
       log.error("handleCustomException: {}", logMessage, e);
     } else {
       log.warn("handleCustomException: {}", logMessage, e);
     }
 
-    ApiResponse<Void> response = ApiResponse.fail(e.getResultCode(), e.getMessage());
-    return ResponseEntity.status(e.getHttpStatus()).body(response);
+    return ApiResponse.fail(e.getErrorCode());
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -35,22 +34,14 @@ public class GlobalExceptionHandler {
       MethodArgumentNotValidException e
   ) {
     log.warn("handleMethodArgumentNotValidException", e);
-    String message = e.getBindingResult()
+    String errorMessage = e.getBindingResult()
         .getAllErrors()
         .stream()
         .map(error -> (FieldError) error)
         .map(error -> error.getField() + "-" + error.getCode() + "-" + error.getDefaultMessage())
         .collect(Collectors.joining("\n"));
 
-    ApiResponse<Void> response = ApiResponse.fail(ErrorCode.CLIENT_ERROR.getResultCode(), message);
-    return ResponseEntity.badRequest().body(response);
-  }
-
-  @ExceptionHandler(AccessDeniedException.class)
-  public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException e) {
-    log.warn("handleAccessDeniedException", e);
-    ApiResponse<Void> response = ApiResponse.fail("AUTH-403", "접근 권한이 없습니다");
-    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    return ApiResponse.fail(ErrorCode.CLIENT_ERROR, errorMessage);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -58,8 +49,6 @@ public class GlobalExceptionHandler {
       HttpMessageNotReadableException e
   ) {
     log.warn("handleHttpMessageNotReadableException", e);
-    ApiResponse<Void> response = ApiResponse.fail(ErrorCode.CLIENT_ERROR.getResultCode(),
-        e.getMostSpecificCause().getMessage());
-    return ResponseEntity.badRequest().body(response);
+    return ApiResponse.fail(ErrorCode.CLIENT_ERROR);
   }
 }

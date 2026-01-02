@@ -38,7 +38,7 @@ public enum ErrorCode {
   ANALYSIS_NOT_FOUND(HttpStatus.NOT_FOUND, "ANALYSIS-404", "분석 결과를 찾을 수 없습니다."),
 
   // 공통 오류
-  CLIENT_ERROR(HttpStatus.BAD_REQUEST, "CLIENT-400", "올바르지 않은 요청입니다."),
+  CLIENT_ERROR(HttpStatus.BAD_REQUEST, "CLIENT-400", "요청 형식이 올바르지 않습니다."),
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-500", "서버 내부 오류가 발생하였습니다."),
   ;
 
