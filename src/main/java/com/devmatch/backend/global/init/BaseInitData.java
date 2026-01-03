@@ -17,6 +17,7 @@ public class BaseInitData {
   ApplicationRunner baseInitDataApplicationRunner() {
     return args -> {
       initialDataService.createInitialUsers();
+      initialDataService.createInitialProjects();
     };
   }
 }

@@ -47,9 +47,4 @@ public class UserService {
     return userRepository.findByRefreshToken(refreshToken)
         .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
   }
-
-  @Transactional(readOnly = true)
-  public long count() {
-    return userRepository.count();
-  }
 }

@@ -45,7 +45,8 @@ public class User extends BaseEntity {
   public User modify(String nickname, String profileImgUrl) {
     this.refreshToken = UUID.randomUUID().toString();
     this.nickname = nickname;
-    this.profileImgUrl = profileImgUrl;
+    this.profileImgUrl = StringUtils.hasText(profileImgUrl) ? profileImgUrl
+        : "https://placehold.co/600x600?text=U_U";
     return this;
   }
 }
