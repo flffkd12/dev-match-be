@@ -29,11 +29,11 @@ spring:
             user-name-attribute: id
   ai:
     openai:
-      base-url: https://api.groq.com/openai
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       api-key: ${SPRING__AI__OPENAI__API_KEY}
       chat:
         options:
-          model: meta-llama/llama-4-maverick-17b-128e-instruct
+          model: gemini-3-flash-preview
           temperature: 0
 
 management:
