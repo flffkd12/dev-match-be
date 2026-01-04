@@ -18,6 +18,7 @@ public class BaseInitData {
     return args -> {
       initialDataService.createInitialUsers();
       initialDataService.createInitialProjects();
+      initialDataService.createInitialApplications();
     };
   }
 }

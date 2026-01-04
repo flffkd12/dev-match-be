@@ -94,7 +94,7 @@ class AnalysisPromptGenerator {
     return """
         - 프로젝트: %s
         - 팀 규모: %d명 (역할 분담 가능)
-        - 프로젝트 기간: %d주 (학습 시간 충분)
+        - 프로젝트 기간: %d주
         - 필요 기술: %s""".formatted(
         project.getDescription(),
         project.getTeamSize(),
