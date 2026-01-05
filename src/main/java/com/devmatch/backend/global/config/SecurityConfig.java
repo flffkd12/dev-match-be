@@ -34,7 +34,8 @@ public class SecurityConfig {
       "/error",
       "/favicon.ico",
       "/h2-console/**",
-      "/.well-known/**"
+      "/.well-known/**",
+      "/test/**"
   };
 
   private static final String[] AUTH_NEEDED_URI_LIST = {

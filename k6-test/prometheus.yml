@@ -1,0 +1,13 @@
+global:
+  # 데이터 수집 주기
+  scrape_interval: 15s
+
+scrape_configs:
+  # 자기 자신의 상태 기록
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+
+# k6의 데이터 송신에 대한 수신 준비
+remote_write:
+  - url: "http://localhost:9090/api/v1/write"
