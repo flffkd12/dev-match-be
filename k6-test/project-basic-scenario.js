@@ -6,6 +6,7 @@ import exec from 'k6/execution';
  * 1. 가상의 사용자 x명이 각각 y개의 프로젝트를 생성한다.
  * 2. 가상의 사용자 x명이 각각 y개의 프로젝트를 조회해 본다.
  * 3. 가상의 사용자 x명이 각각 y개의 프로젝트를 수정한다.
+ * 4. 가상의 사용자 x명이 각각 y개의 프로젝트를 삭제한다.
  */
 export const options = {
   scenarios: {
@@ -41,7 +42,8 @@ export default function () {
   }
 
   // 4. 프로젝트 조회
-  const resGet = getProject(resCreate.json().content.projectId);
+  const projectID = resCreate.json().content.projectId;
+  const resGet = getProject(projectID);
   const getSuccess = check(resGet,
       {'프로젝트 단일 조회 성공 (200)': (r) => r.status === 200});
   if (!getSuccess) {
@@ -49,8 +51,16 @@ export default function () {
   }
 
   // 5. 프로젝트 수정
-  const resUpdate = updateProject(resGet.json().content.projectId);
-  check(resUpdate, {'프로젝트 수정 성공 (200)': (r) => r.status === 200});
+  const resUpdate = updateProject(projectID);
+  const updateSuccess = check(resUpdate,
+      {'프로젝트 수정 성공 (200)': (r) => r.status === 200});
+  if (!updateSuccess) {
+    return;
+  }
+
+  // 6. 프로젝트 삭제
+  const deleteResponse = deleteProject(projectID);
+  check(deleteResponse, {'프로젝트 삭제 성공 (204)': (r) => r.status === 204});
 }
 
 function loginAndGetToken() {
@@ -91,10 +101,7 @@ function createProject() {
 }
 
 function getProject(projectId) {
-  const params = {
-    tags: {name: 'GET /projects/{projectId}'}
-  };
-
+  const params = {tags: {name: 'GET /projects/{projectId}'}};
   return http.get(`${BASE_URL}/projects/${projectId}`, params);
 }
 
@@ -114,4 +121,9 @@ function updateProject(projectId) {
   };
 
   return http.patch(`${BASE_URL}/projects/${projectId}`, payload, params);
+}
+
+function deleteProject(projectId) {
+  const params = {tags: {name: 'DELETE /projects/{projectId}'}};
+  return http.del(`${BASE_URL}/projects/${projectId}`, null, params);
 }
