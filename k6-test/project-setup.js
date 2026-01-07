@@ -15,16 +15,23 @@ export const options = {
 
 const BASE_URL = 'http://host.docker.internal:8080';
 
+let cachedToken = null;
+
 export default function () {
-  // 1. 테스트용 사용자 생성 및 토큰 획득
-  const setupRes = http.post(`${BASE_URL}/test/users/setup`, null,
-      {tags: {name: 'POST /test/users/setup'}});
-  check(setupRes, {'사용자 생성 성공 (200)': (r) => r.status === 200,});
-  const accessToken = setupRes.json().content;
+  // 1. VU가 처음 실행될 때만 사용자 생성
+  if (!cachedToken) {
+    const setupRes = http.post(`${BASE_URL}/test/users/setup`, null, {
+      tags: {name: 'POST /test/users/setup'}
+    });
+
+    if (check(setupRes, {'사용자 생성 성공': (r) => r.status === 200})) {
+      cachedToken = setupRes.json().content;
+    }
+  }
 
   // 2. 쿠키 설정
   const jar = http.cookieJar();
-  jar.set(BASE_URL, 'accessToken', accessToken, {
+  jar.set(BASE_URL, 'accessToken', cachedToken, {
     domain: 'host.docker.internal',
     path: '/',
     secure: false,
