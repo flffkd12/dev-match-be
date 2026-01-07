@@ -14,32 +14,41 @@ export const options = {
 };
 
 const BASE_URL = 'http://host.docker.internal:8080';
-
 let cachedToken = null;
 
 export default function () {
-  // 1. VU가 처음 실행될 때만 사용자 생성
-  if (!cachedToken) {
-    const setupRes = http.post(`${BASE_URL}/test/users/login`, null, {
-      tags: {name: 'POST /test/users/login'}
-    });
-
-    if (check(setupRes, {'사용자 생성 성공': (r) => r.status === 200})) {
-      cachedToken = setupRes.json().content;
-    }
+  if (cachedToken == null) {
+    cachedToken = loginAndGetToken();
   }
 
-  // 2. 쿠키 설정
+  if (cachedToken != null) {
+    setAuthCookie(cachedToken);
+    const response = createProject();
+    check(response, {'프로젝트 생성 성공 (201)': (r) => r.status === 201});
+  }
+}
+
+function loginAndGetToken() {
+  const setupRes = http.post(`${BASE_URL}/test/users/login`, null, {
+    tags: {name: 'POST /test/users/login'}
+  });
+
+  const success = check(setupRes, {'사용자 로그인 성공': (r) => r.status === 200});
+  return success ? setupRes.json().content : null;
+}
+
+function setAuthCookie(token) {
   const jar = http.cookieJar();
-  jar.set(BASE_URL, 'accessToken', cachedToken, {
+  jar.set(BASE_URL, 'accessToken', token, {
     domain: 'host.docker.internal',
     path: '/',
     secure: false,
     httpOnly: true,
     sameSite: 'strict',
   });
+}
 
-  // 3. 프로젝트 생성 요청 데이터 준비
+function createProject() {
   const payload = JSON.stringify({
     title: `Project-VU${exec.vu.idInTest}-IT${exec.scenario.iterationInInstance}`,
     description: '부하 테스트를 위해 자동으로 생성된 프로젝트 설명입니다.',
@@ -49,11 +58,9 @@ export default function () {
   });
 
   const params = {
-    headers: {'Content-Type': 'application/json',},
+    headers: {'Content-Type': 'application/json'},
     tags: {name: 'POST /projects'}
   };
 
-  // 4. 프로젝트 생성
-  const projectRes = http.post(`${BASE_URL}/projects`, payload, params);
-  check(projectRes, {'프로젝트 생성 성공 (201)': (r) => r.status === 201,});
+  return http.post(`${BASE_URL}/projects`, payload, params);
 }
