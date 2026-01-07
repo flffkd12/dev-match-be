@@ -2,7 +2,10 @@ import http from 'k6/http';
 import {check} from 'k6';
 import exec from 'k6/execution';
 
-// 가상의 사용자 x명이 각각 y개의 프로젝트 생성하여 총 xy개 프로젝트 생성
+/**
+ * 1. 가상의 사용자 x명이 각각 y개의 프로젝트를 생성한다.
+ * 2. 가상의 사용자 x명이 각각 y개의 프로젝트를 조회해 본다.
+ */
 export const options = {
   scenarios: {
     my_scenario: {
@@ -24,7 +27,13 @@ export default function () {
   if (cachedToken != null) {
     setAuthCookie(cachedToken);
     const response = createProject();
-    check(response, {'프로젝트 생성 성공 (201)': (r) => r.status === 201});
+    const creationSuccess = check(response, {'프로젝트 생성 성공 (201)': (r) => r.status === 201});
+
+    if (creationSuccess) {
+      const projectId = response.json().content.projectId;
+      const getResponse = getProject(projectId);
+      check(getResponse, {'프로젝트 단일 조회 성공 (200)': (r) => r.status === 200});
+    }
   }
 }
 
@@ -63,4 +72,12 @@ function createProject() {
   };
 
   return http.post(`${BASE_URL}/projects`, payload, params);
+}
+
+function getProject(projectId) {
+  const params = {
+    tags: {name: 'GET /projects/{projectId}'}
+  };
+
+  return http.get(`${BASE_URL}/projects/${projectId}`, params);
 }
