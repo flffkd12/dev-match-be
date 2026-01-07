@@ -21,28 +21,36 @@ const BASE_URL = 'http://host.docker.internal:8080';
 let cachedToken = null;
 
 export default function () {
+  // 1. 로그인
   if (!cachedToken) {
     cachedToken = loginAndGetToken();
   }
-
-  if (cachedToken) {
-    setAuthCookie(cachedToken);
-    const response = createProject();
-    const creationSuccess = check(response,
-        {'프로젝트 생성 성공 (201)': (r) => r.status === 201});
-
-    if (creationSuccess) {
-      const projectId = response.json().content.projectId;
-      const getResponse = getProject(projectId);
-      const getSuccess = check(getResponse,
-          {'프로젝트 단일 조회 성공 (200)': (r) => r.status === 200});
-
-      if (getSuccess) {
-        const updateResponse = updateProject(projectId);
-        check(updateResponse, {'프로젝트 수정 성공 (200)': (r) => r.status === 200});
-      }
-    }
+  if (!cachedToken) {
+    return;
   }
+
+  // 2. 인증 설정
+  setAuthCookie(cachedToken);
+
+  // 3. 프로젝트 생성
+  const resCreate = createProject();
+  const creationSuccess = check(resCreate,
+      {'프로젝트 생성 성공 (201)': (r) => r.status === 201});
+  if (!creationSuccess) {
+    return;
+  }
+
+  // 4. 프로젝트 조회
+  const resGet = getProject(resCreate.json().content.projectId);
+  const getSuccess = check(resGet,
+      {'프로젝트 단일 조회 성공 (200)': (r) => r.status === 200});
+  if (!getSuccess) {
+    return;
+  }
+
+  // 5. 프로젝트 수정
+  const resUpdate = updateProject(resGet.json().content.projectId);
+  check(resUpdate, {'프로젝트 수정 성공 (200)': (r) => r.status === 200});
 }
 
 function loginAndGetToken() {
