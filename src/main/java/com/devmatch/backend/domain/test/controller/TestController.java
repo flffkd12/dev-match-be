@@ -23,7 +23,7 @@ public class TestController {
   private final UserService userService;
   private final AuthTokenService authTokenService;
 
-  @PostMapping("/users/setup")
+  @PostMapping("/users/login")
   public ResponseEntity<ApiResponse<String>> setupTestUser(
       @RequestParam(value = "oauthId", required = false) String oauthId,
       @RequestParam(value = "nickname", required = false) String nickname

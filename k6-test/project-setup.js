@@ -20,8 +20,8 @@ let cachedToken = null;
 export default function () {
   // 1. VU가 처음 실행될 때만 사용자 생성
   if (!cachedToken) {
-    const setupRes = http.post(`${BASE_URL}/test/users/setup`, null, {
-      tags: {name: 'POST /test/users/setup'}
+    const setupRes = http.post(`${BASE_URL}/test/users/login`, null, {
+      tags: {name: 'POST /test/users/login'}
     });
 
     if (check(setupRes, {'사용자 생성 성공': (r) => r.status === 200})) {
