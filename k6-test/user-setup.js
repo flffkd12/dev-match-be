@@ -10,7 +10,7 @@ export const options = {
 export default function () {
   const url = 'http://host.docker.internal:8080/test/users/setup';
 
-  const res = http.post(url);
+  const res = http.post(url, null, {tags: {name: 'POST /test/users/setup'}});
 
   check(res, {
     '유저 생성 성공 (200)': (r) => r.status === 200,

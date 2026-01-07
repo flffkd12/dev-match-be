@@ -13,6 +13,8 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
 
@@ -24,5 +26,6 @@ services:
     command: run /scripts/user-setup.js -o experimental-prometheus-rw
     environment:
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_STATS=avg,sum,count
     depends_on:
       - prometheus

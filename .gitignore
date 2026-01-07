@@ -49,3 +49,6 @@ GEMINI.md
 
 ### ERD ###
 erd.mermaid
+
+### Grafana ###
+/k6-test/grafana_data
