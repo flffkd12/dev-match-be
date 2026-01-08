@@ -41,8 +41,7 @@ export function updateAllMyProjects() {
     };
 
     const updateRes = http.patch(`${BASE_URL}/projects/${project.projectId}`,
-        payload,
-        params);
+        payload, params);
 
     check(updateRes, {
       '프로젝트 수정 성공 (200)': (r) => r.status === 200,

@@ -28,8 +28,7 @@ export function deleteAllMyProjects() {
   projects.forEach((project) => {
     const params = {tags: {name: 'DELETE /projects/{projectId}'}};
     const deleteRes = http.del(`${BASE_URL}/projects/${project.projectId}`,
-        null,
-        params);
+        null, params);
 
     check(deleteRes, {
       '프로젝트 삭제 성공 (204)': (r) => r.status === 204,
