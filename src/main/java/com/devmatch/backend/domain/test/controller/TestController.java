@@ -29,7 +29,7 @@ public class TestController {
       @RequestParam(value = "nickname", required = false) String nickname
   ) {
     String finalOauthId = oauthId != null ? oauthId : "test_" + UUID.randomUUID();
-    String finalNickname = nickname != null ? nickname : "User_" + finalOauthId.substring(0, 8);
+    String finalNickname = nickname != null ? nickname : "User_" + finalOauthId;
 
     User user = userService.modifyOrJoin(finalOauthId, finalNickname, null);
     String accessToken = authTokenService.genAccessToken(user);

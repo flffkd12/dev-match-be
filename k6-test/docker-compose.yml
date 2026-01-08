@@ -25,7 +25,10 @@ services:
     entrypoint: /bin/sh
     # 실행 시킬 js들과 프로메테우스에 결과 전달
     command: >
-      -c "k6 run /scripts/project-basic-scenario.js -o experimental-prometheus-rw"
+      -c "k6 run /scripts/project-create.js -o experimental-prometheus-rw
+      && k6 run /scripts/project-uni-read.js -o experimental-prometheus-rw
+      && k6 run /scripts/project-update.js -o experimental-prometheus-rw
+      && k6 run /scripts/project-delete.js -o experimental-prometheus-rw"
     environment:
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
       - K6_PROMETHEUS_RW_TREND_STATS=avg,sum,count
