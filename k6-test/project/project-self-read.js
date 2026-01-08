@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import {check} from 'k6';
-import {BASE_URL, CONFIG, setAuth} from './utils.js';
+import {BASE_URL, CONFIG, setAuth} from '../utils.js';
 
 export const options = {
   scenarios: {
