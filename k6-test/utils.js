@@ -9,6 +9,7 @@ export const CONFIG = {
   vus: 100,
   perVuIterations: 30,      // create, delete
   sharedIterations: 3000,   // update, read
+  oneIteration: 1,
 };
 
 let cachedToken = null;
