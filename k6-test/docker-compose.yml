@@ -27,9 +27,9 @@ services:
     command: >
       -c "k6 run /scripts/project-create.js -o experimental-prometheus-rw
       && k6 run /scripts/project-uni-read.js -o experimental-prometheus-rw
-      && k6 run /scripts/project-self-read.js -o experimental-prometheus-rw"
-    #  && k6 run /scripts/project-update.js -o experimental-prometheus-rw
-    #  && k6 run /scripts/project-delete.js -o experimental-prometheus-rw"
+      && k6 run /scripts/project-self-read.js -o experimental-prometheus-rw
+      && k6 run /scripts/project-update.js -o experimental-prometheus-rw
+      && k6 run /scripts/project-delete.js -o experimental-prometheus-rw"
     environment:
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
       - K6_PROMETHEUS_RW_TREND_STATS=avg,sum,count

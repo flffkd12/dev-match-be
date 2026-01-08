@@ -2,36 +2,50 @@ import http from 'k6/http';
 import {check} from 'k6';
 import exec from 'k6/execution';
 import {BASE_URL, CONFIG, setAuth} from './utils.js';
+import {getMyProjects} from './project-self-read.js';
 
 export const options = {
   scenarios: {
-    update_data: {
-      executor: 'shared-iterations',
+    update_my_projects: {
+      executor: 'per-vu-iterations',
       vus: CONFIG.vus,
-      iterations: CONFIG.sharedIterations,
-      exec: 'updateProject',
+      iterations: CONFIG.oneIteration,
+      exec: 'updateAllMyProjects',
     },
   },
 };
 
-export function updateProject() {
+export function updateAllMyProjects() {
   setAuth();
 
-  const payload = JSON.stringify({
-    title: `Project-VU${exec.vu.idInTest}-IT${exec.scenario.iterationInInstance}-Updated`,
-    description: '부하 테스트 중 수정된 프로젝트 설명입니다.',
-    techStacks: ['Java', 'Spring Boot', 'Vue.js'],
-    teamSize: 5,
-    durationWeeks: 10,
-    roleAssignment: 'Backend: 2, Frontend: 2, Designer: 1'
-  });
+  const projects = getMyProjects(false);
 
-  const params = {
-    headers: {'Content-Type': 'application/json'},
-    tags: {name: 'PATCH /projects/{projectId}'}
-  };
-  const response = http.patch(
-      `${BASE_URL}/projects/${exec.scenario.iterationInInstance + 1}`, payload,
-      params);
-  check(response, {'프로젝트 수정 성공 (200)': (r) => r.status === 200});
+  if (!projects || projects.length === 0) {
+    console.log(`VU ${exec.vu.idInTest}: 수정할 프로젝트가 없습니다.`);
+    return;
+  }
+
+  projects.forEach((project) => {
+    const payload = JSON.stringify({
+      title: `Project-VU${exec.vu.idInTest}-ID${project.id}-Updated`,
+      description: '부하 테스트 중 수정된 프로젝트 설명입니다.',
+      techStacks: ['Java', 'Spring Boot', 'Vue.js'],
+      teamSize: 5,
+      durationWeeks: 10,
+      roleAssignment: 'Backend: 2, Frontend: 2, Designer: 1'
+    });
+
+    const params = {
+      headers: {'Content-Type': 'application/json'},
+      tags: {name: 'PATCH /projects/{projectId}'}
+    };
+
+    const updateRes = http.patch(`${BASE_URL}/projects/${project.projectId}`,
+        payload,
+        params);
+
+    check(updateRes, {
+      '프로젝트 수정 성공 (200)': (r) => r.status === 200,
+    });
+  });
 }
