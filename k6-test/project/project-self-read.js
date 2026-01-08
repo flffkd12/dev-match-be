@@ -19,7 +19,8 @@ export function getMyProjects(doAuth = true) {
   }
 
   const params = {tags: {name: 'GET /projects/my'}};
-  const response = http.get(`${BASE_URL}/projects/my`, params);
+  const response = http.get(
+      `${BASE_URL}/projects/my?size=${CONFIG.perVuIterations}`, params);
 
   const isSuccess = check(response, {
     '본인 프로젝트 목록 조회 성공 (200)': (r) => r.status === 200,
