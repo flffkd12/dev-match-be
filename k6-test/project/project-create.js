@@ -6,9 +6,9 @@ import {BASE_URL, CONFIG, setAuth} from '../utils.js';
 export const options = {
   scenarios: {
     setup_data: {
-      executor: 'per-vu-iterations',
-      vus: CONFIG.vus,
-      iterations: CONFIG.perVuIterations,
+      executor: 'shared-iterations',
+      vus: 8,
+      iterations: CONFIG.sharedIterations,
       exec: 'createProject',
     },
   },

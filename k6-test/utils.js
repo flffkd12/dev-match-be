@@ -7,8 +7,8 @@ export const BASE_URL = 'http://host.docker.internal:8080';
 // 테스트 공통 설정
 export const CONFIG = {
   vus: 100,
-  perVuIterations: 30,      // create
-  sharedIterations: 3000,   // read
+  perVuIterations: 8,      // create
+  sharedIterations: 800,   // read
   oneIteration: 1,          // self-read, update, delete
 };
 
