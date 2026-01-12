@@ -35,6 +35,10 @@ spring:
         options:
           model: gemini-2.5-flash-lite
           temperature: 0
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
 
 management:
   endpoints:

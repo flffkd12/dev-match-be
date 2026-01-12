@@ -6,9 +6,9 @@ import {BASE_URL, CONFIG, setAuth} from '../utils.js';
 export const options = {
   scenarios: {
     fetch_uni_data: {
-      executor: 'shared-iterations',
+      executor: 'constant-vus',
       vus: CONFIG.vus,
-      iterations: CONFIG.sharedIterations,
+      duration: '30s',
       exec: 'getProject',
     },
   },
@@ -17,8 +17,9 @@ export const options = {
 export function getProject() {
   setAuth();
 
+  const projectId = exec.scenario.iterationInInstance % CONFIG.sharedIterations
+      + 1;
   const params = {tags: {name: 'GET /projects/{projectId}'}};
-  const response = http.get(
-      `${BASE_URL}/projects/${exec.scenario.iterationInInstance + 1}`, params);
+  const response = http.get(`${BASE_URL}/projects/${projectId}`, params);
   check(response, {'프로젝트 단일 조회 성공 (200)': (r) => r.status === 200});
 }

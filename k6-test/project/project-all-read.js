@@ -5,9 +5,9 @@ import {BASE_URL, CONFIG, setAuth} from '../utils.js';
 export const options = {
   scenarios: {
     fetch_all_projects: {
-      executor: 'per-vu-iterations',
-      vus: 1,
-      iterations: CONFIG.oneIteration,
+      executor: 'constant-vus',
+      vus: CONFIG.vus,
+      duration: '30s',
       exec: 'getAllProjects',
     },
   },

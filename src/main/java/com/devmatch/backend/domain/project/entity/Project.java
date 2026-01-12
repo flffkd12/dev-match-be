@@ -32,7 +32,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Entity
 @Table(
     name = "projects",
-    indexes = {@Index(name = "idx_creator_id", columnList = "creator_id")}
+    indexes = {
+        @Index(name = "idx_creator_id", columnList = "creator_id"),
+        @Index(name = "idx_created_at", columnList = "created_at")
+    }
 )
 public class Project extends BaseEntity {
 
