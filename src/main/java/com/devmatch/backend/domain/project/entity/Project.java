@@ -124,6 +124,10 @@ public class Project extends BaseEntity {
       throw new CustomException(ErrorCode.PROJECT_TEAM_SIZE_INVALID);
     } else if (teamSize.equals(this.currentTeamSize)) {
       this.status = ProjectStatus.COMPLETED;
+    } else {
+      if (ProjectStatus.COMPLETED == this.status) {
+        this.status = ProjectStatus.RECRUITING;
+      }
     }
 
     this.title = title;
