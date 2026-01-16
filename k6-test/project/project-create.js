@@ -1,5 +1,5 @@
 import exec from 'k6/execution';
-import {CONFIG, setAuth} from '../utils.js';
+import {CONFIG, setAuth} from '../common/utils.js';
 import * as api from '../common/api-actions.js';
 
 export const options = {

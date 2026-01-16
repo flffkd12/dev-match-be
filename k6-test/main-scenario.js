@@ -1,4 +1,4 @@
-import {setAuth} from './utils.js';
+import {setAuth} from './common/utils.js';
 import * as api from './common/api-actions.js';
 
 // 프로젝트 정원 설정
