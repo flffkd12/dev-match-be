@@ -12,6 +12,8 @@ import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.domain.project.service.ProjectService;
 import com.devmatch.backend.domain.user.entity.User;
 import com.devmatch.backend.domain.user.service.UserService;
+import com.devmatch.backend.global.exception.CustomException;
+import com.devmatch.backend.global.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,11 @@ public class ProjectRecruitmentFacade {
 
   public ProjectResponse createProjectRoleAssignment(Long creatorId, Long projectId) {
     Project project = projectService.findByProjectId(projectId);
+
+    if (project.isAnalysisPerformed()) {
+      throw new CustomException(ErrorCode.PROJECT_ALREADY_ANALYZED);
+    }
+
     List<Application> approvedApplications = applicationService.findByProjectIdAndStatus(
         projectId, ApplicationStatus.APPROVED);
     String roleAssignment = analysisService.createProjectRoleAssignment(project,

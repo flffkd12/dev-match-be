@@ -24,6 +24,7 @@ public enum ErrorCode {
   PROJECT_NOT_RECRUITING(HttpStatus.BAD_REQUEST, "PROJECT-400-4", "모집 중인 프로젝트가 아닙니다."),
   PROJECT_TEAM_NOT_FULL(HttpStatus.BAD_REQUEST, "PROJECT-400-5", "정원이 다 차지 않았습니다."),
   PROJECT_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "PROJECT-400-6", "모집 완료된 프로젝트가 아닙니다."),
+  PROJECT_ALREADY_ANALYZED(HttpStatus.BAD_REQUEST, "PROJECT-400-7", "AI 역할 분석 이력이 존재하는 프로젝트입니다."),
   PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PROJECT-403", "해당 프로젝트에 대한 권한이 없습니다."),
   PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT-404", "프로젝트를 찾을 수 없습니다."),
 

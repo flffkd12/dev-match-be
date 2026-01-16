@@ -66,6 +66,9 @@ public class Project extends BaseEntity {
   @OneToMany(mappedBy = "project", fetch = LAZY, orphanRemoval = true)
   private List<Application> applications;
 
+  @Column(nullable = false)
+  private boolean isAnalysisPerformed;
+
   @Builder
   public Project(
       String title,
@@ -84,6 +87,7 @@ public class Project extends BaseEntity {
     this.currentTeamSize = 0;
     this.durationWeeks = durationWeeks;
     this.creator = creator;
+    this.isAnalysisPerformed = false;
   }
 
   public void increaseCurrentTeamSize() {
@@ -136,6 +140,7 @@ public class Project extends BaseEntity {
     this.teamSize = teamSize;
     this.durationWeeks = durationWeeks;
     this.roleAssignment = roleAssignment;
+    this.isAnalysisPerformed = false;
   }
 
   public void allocateRole(String roleAssignment) {
@@ -143,5 +148,6 @@ public class Project extends BaseEntity {
       throw new CustomException(ErrorCode.PROJECT_NOT_COMPLETED);
     }
     this.roleAssignment = roleAssignment;
+    this.isAnalysisPerformed = true;
   }
 }
