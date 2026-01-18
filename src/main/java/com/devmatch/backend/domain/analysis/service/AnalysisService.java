@@ -1,6 +1,7 @@
 package com.devmatch.backend.domain.analysis.service;
 
 import com.devmatch.backend.domain.analysis.dto.Analysis;
+import com.devmatch.backend.domain.analysis.enums.RateLimitType;
 import com.devmatch.backend.domain.application.dto.Skill;
 import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.project.entity.Project;
@@ -10,15 +11,16 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class AnalysisService {
 
@@ -27,6 +29,20 @@ public class AnalysisService {
 
   private final ChatModel chatModel;
   private final AnalysisPromptGenerator promptGenerator;
+  private final String defaultModel;
+  private final String fallbackModel;
+
+  AnalysisService(
+      ChatModel chatModel,
+      AnalysisPromptGenerator promptGenerator,
+      @Value("${spring.ai.openai.chat.options.model}") String defaultModel,
+      @Value("${custom.ai.fallback-model}") String fallbackModel
+  ) {
+    this.chatModel = chatModel;
+    this.promptGenerator = promptGenerator;
+    this.defaultModel = defaultModel;
+    this.fallbackModel = fallbackModel;
+  }
 
   public Analysis createAnalysis(Project project, List<Skill> applicantSkills) {
     String prompt = promptGenerator.generateAnalysisPrompt(project, applicantSkills);
@@ -43,18 +59,45 @@ public class AnalysisService {
     return callAiWithRetry(prompt);
   }
 
-  private String callAiWithRetry(String prompt) {
+  private String callAiWithRetry(String promptText) {
     int maxRetries = 3;
     int retryCount = 0;
+    String currentModel = defaultModel;
 
     while (retryCount < maxRetries) {
       try {
-        return chatModel.call(prompt);
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+            .model(currentModel)
+            .temperature(0.0)
+            .build();
+
+        return chatModel.call(new Prompt(promptText, options))
+            .getResult()
+            .getOutput()
+            .getText();
       } catch (Exception e) {
         String errorMessage = e.getMessage();
-        if (errorMessage != null && errorMessage.contains(
-            "GenerateRequestsPerMinutePerProjectPerModel-FreeTier")) {
-          log.warn("AI 모델 Rate Limit 발생 (RPM). 재시도 대기 중... (시도 {}/{})", retryCount + 1, maxRetries);
+        RateLimitType rateLimitType = RateLimitType.fromErrorMessage(errorMessage);
+
+        if (rateLimitType == RateLimitType.UNKNOWN) {
+          log.error("처리하고 있지 않은 quotaId 오류입니다. 메시지: {}", errorMessage);
+          throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "AI 분석 중 예상치 못한 오류가 발생했습니다.");
+        }
+
+        log.warn("AI 모델 Rate Limit 발생 (타입: {}, 모델: {}). 시도 {}/{}",
+            rateLimitType, currentModel, retryCount + 1, maxRetries);
+
+        if (rateLimitType == RateLimitType.RPD) {
+          if (currentModel.equals(fallbackModel)) {
+            log.error("Fallback 모델({})에서 RPD 발생. 더 이상 전환할 모델이 없습니다.", fallbackModel);
+            // TODO: 정적인 분석 결과로 전환할 것
+            throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS,
+                "모든 AI 모델의 일일 할당량이 초과되었습니다.");
+          }
+
+          log.info("RPD 감지됨. 모델을 {} -> {} 로 전환하여 재시도합니다.", currentModel, fallbackModel);
+          currentModel = fallbackModel;
+        } else if (rateLimitType == RateLimitType.RPM) {
           long waitTime = extractWaitTime(errorMessage) + 1;
           try {
             Thread.sleep(waitTime);
@@ -62,10 +105,9 @@ public class AnalysisService {
             Thread.currentThread().interrupt();
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "분석 재시도 대기 중 인터럽트 발생");
           }
-          retryCount++;
-        } else {
-          throw e;
         }
+
+        retryCount++;
       }
     }
 

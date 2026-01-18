@@ -33,7 +33,7 @@ spring:
       api-key: ${SPRING__AI__OPENAI__API_KEY}
       chat:
         options:
-          model: gemini-2.5-flash-lite
+          model: gemini-3-flash-preview
           temperature: 0
   jpa:
     properties:
@@ -50,13 +50,15 @@ management:
       show-details: when-authorized
 
 custom:
+  ai:
+    fallback-model: gemini-2.5-flash-lite
   jwt:
     secret: ${CUSTOM__JWT__SECRET}
     expirationSeconds: "#{60*20}"
 
 logging:
   level:
-    com.devmatch.backend: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.http: DEBUG
+    com.devmatch.backend: INFO
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+    org.springframework.http: INFO
