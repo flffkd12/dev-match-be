@@ -7,7 +7,6 @@ import com.devmatch.backend.domain.application.entity.Application;
 import com.devmatch.backend.domain.project.entity.Project;
 import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,9 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AnalysisService {
-
-  private static final BigDecimal MAX_SCORE = BigDecimal.valueOf(100);
-  private static final BigDecimal MIN_SCORE = BigDecimal.ZERO;
 
   private final ChatModel chatModel;
   private final AnalysisPromptGenerator promptGenerator;
@@ -47,7 +43,11 @@ public class AnalysisService {
   public Analysis createAnalysis(Project project, List<Skill> applicantSkills) {
     String prompt = promptGenerator.generateAnalysisPrompt(project, applicantSkills);
     log.debug("지원서 분석 전체 프롬프트: {}", prompt);
-    return aiResponseToAnalysis(callAiWithRetry(prompt));
+
+    String aiResponse = callAiWithRetry(prompt);
+    log.debug("AI 지원서 분석 응답: {}", aiResponse);
+
+    return Analysis.from(aiResponse);
   }
 
   public String createProjectRoleAssignment(
@@ -56,6 +56,7 @@ public class AnalysisService {
   ) {
     String prompt = promptGenerator.generateRoleAssignmentPrompt(project, approvedApplications);
     log.debug("역할 분석 전체 프롬프트: {}", prompt);
+
     return callAiWithRetry(prompt);
   }
 
@@ -76,42 +77,50 @@ public class AnalysisService {
             .getOutput()
             .getText();
       } catch (Exception e) {
-        String errorMessage = e.getMessage();
-        RateLimitType rateLimitType = RateLimitType.fromErrorMessage(errorMessage);
-
-        if (rateLimitType == RateLimitType.UNKNOWN) {
-          log.error("처리하고 있지 않은 quotaId 오류입니다. 메시지: {}", errorMessage);
-          throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "AI 분석 중 예상치 못한 오류가 발생했습니다.");
-        }
-
-        log.warn("AI 모델 Rate Limit 발생 (타입: {}, 모델: {}). 시도 {}/{}",
-            rateLimitType, currentModel, retryCount + 1, maxRetries);
-
-        if (rateLimitType == RateLimitType.RPD) {
-          if (currentModel.equals(fallbackModel)) {
-            log.error("Fallback 모델({})에서 RPD 발생. 더 이상 전환할 모델이 없습니다.", fallbackModel);
-            // TODO: 정적인 분석 결과로 전환할 것
-            throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS,
-                "모든 AI 모델의 일일 할당량이 초과되었습니다.");
-          }
-
-          log.info("RPD 감지됨. 모델을 {} -> {} 로 전환하여 재시도합니다.", currentModel, fallbackModel);
-          currentModel = fallbackModel;
-        } else if (rateLimitType == RateLimitType.RPM) {
-          long waitTime = extractWaitTime(errorMessage) + 1;
-          try {
-            Thread.sleep(waitTime);
-          } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "분석 재시도 대기 중 인터럽트 발생");
-          }
-        }
-
+        currentModel = handleRateLimitError(e.getMessage(), currentModel, retryCount, maxRetries);
         retryCount++;
       }
     }
 
     throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS, "AI 모델 호출 재시도 횟수 초과");
+  }
+
+  private String handleRateLimitError(
+      String errorMessage,
+      String currentModel,
+      int retryCount,
+      int maxRetries
+  ) {
+    RateLimitType rateLimitType = RateLimitType.fromErrorMessage(errorMessage);
+
+    if (rateLimitType == RateLimitType.UNKNOWN) {
+      log.error("처리하고 있지 않은 quotaId 오류입니다. 메시지: {}", errorMessage);
+      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "AI 분석 중 예상치 못한 오류가 발생했습니다.");
+    }
+
+    log.warn("AI 모델 Rate Limit 발생 (타입: {}, 모델: {}). 시도 {}/{}", rateLimitType, currentModel,
+        retryCount + 1, maxRetries);
+
+    if (rateLimitType == RateLimitType.RPD) {
+      if (currentModel.equals(fallbackModel)) {
+        log.error("Fallback 모델({})에서 RPD 발생. 더 이상 전환할 모델이 없습니다.", fallbackModel);
+        // TODO: 정적인 분석 결과로 전환할 것
+        throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS,
+            "모든 AI 모델의 일일 할당량이 초과되었습니다.");
+      }
+
+      log.info("RPD 감지됨. 모델을 {} -> {} 로 전환하여 재시도합니다.", currentModel, fallbackModel);
+      return fallbackModel;
+    } else if (rateLimitType == RateLimitType.RPM) {
+      try {
+        Thread.sleep(extractWaitTime(errorMessage));
+      } catch (InterruptedException ie) {
+        Thread.currentThread().interrupt();
+        throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "분석 재시도 대기 중 인터럽트 발생");
+      }
+    }
+
+    return currentModel;
   }
 
   private long extractWaitTime(String errorMessage) {
@@ -127,37 +136,5 @@ public class AnalysisService {
     }
 
     return 60000L;
-  }
-
-  private Analysis aiResponseToAnalysis(String aiResponse) {
-    log.debug("AI 응답 원본: {}", aiResponse);
-
-    String[] parts = aiResponse.split(" \\| ");
-    if (parts.length != 2) {
-      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR,
-          "AI 응답 파싱 결과가 올바르지 않습니다. 기대값: 2, 실제 파싱 개수: " + parts.length + " 원본: " + aiResponse);
-    }
-
-    BigDecimal score;
-    try {
-      score = new BigDecimal(parts[0].trim());
-      if (score.compareTo(MIN_SCORE) < 0 || score.compareTo(MAX_SCORE) > 0) {
-        throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR,
-            "점수는 0점 이상, 100점 이하여야 합니다. 현 점수: " + score);
-      }
-    } catch (NumberFormatException e) {
-      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR,
-          "점수 형식이 올바르지 않습니다. 점수: " + parts[0].trim());
-    }
-
-    String reason = parts[1].trim();
-    if (reason.isEmpty()) {
-      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "AI가 분석 사유를 생성하지 못했습니다.");
-    }
-
-    return Analysis.builder()
-        .compatibilityScore(score)
-        .compatibilityReason(reason)
-        .build();
   }
 }
