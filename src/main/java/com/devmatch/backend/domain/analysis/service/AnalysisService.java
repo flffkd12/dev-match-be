@@ -8,6 +8,8 @@ import com.devmatch.backend.global.exception.CustomException;
 import com.devmatch.backend.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
@@ -29,7 +31,7 @@ public class AnalysisService {
   public Analysis createAnalysis(Project project, List<Skill> applicantSkills) {
     String prompt = promptGenerator.generateAnalysisPrompt(project, applicantSkills);
     log.debug("지원서 분석 전체 프롬프트: {}", prompt);
-    return aiResponseToAnalysis(chatModel.call(prompt));
+    return aiResponseToAnalysis(callAiWithRetry(prompt));
   }
 
   public String createProjectRoleAssignment(
@@ -38,7 +40,51 @@ public class AnalysisService {
   ) {
     String prompt = promptGenerator.generateRoleAssignmentPrompt(project, approvedApplications);
     log.debug("역할 분석 전체 프롬프트: {}", prompt);
-    return chatModel.call(prompt);
+    return callAiWithRetry(prompt);
+  }
+
+  private String callAiWithRetry(String prompt) {
+    int maxRetries = 3;
+    int retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      try {
+        return chatModel.call(prompt);
+      } catch (Exception e) {
+        String errorMessage = e.getMessage();
+        if (errorMessage != null && errorMessage.contains(
+            "GenerateRequestsPerMinutePerProjectPerModel-FreeTier")) {
+          log.warn("AI 모델 Rate Limit 발생 (RPM). 재시도 대기 중... (시도 {}/{})", retryCount + 1, maxRetries);
+          long waitTime = extractWaitTime(errorMessage) + 1;
+          try {
+            Thread.sleep(waitTime);
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "분석 재시도 대기 중 인터럽트 발생");
+          }
+          retryCount++;
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "AI 모델 호출 재시도 횟수 초과");
+  }
+
+  private long extractWaitTime(String errorMessage) {
+    try {
+      Pattern jsonPattern = Pattern.compile("\"retryDelay\":\\s*\"([0-9]+)s\"");
+      Matcher jsonMatcher = jsonPattern.matcher(errorMessage);
+      if (jsonMatcher.find()) {
+        long seconds = Long.parseLong(jsonMatcher.group(1));
+        return (seconds + 1) * 1000;
+      }
+    } catch (Exception e) {
+      log.warn("대기 시간 파싱 실패, 기본값 60초 적용", e);
+    }
+
+    return 60000L;
   }
 
   private Analysis aiResponseToAnalysis(String aiResponse) {
