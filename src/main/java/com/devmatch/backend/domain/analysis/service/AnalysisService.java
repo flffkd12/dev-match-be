@@ -69,7 +69,7 @@ public class AnalysisService {
       }
     }
 
-    throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "AI 모델 호출 재시도 횟수 초과");
+    throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS, "AI 모델 호출 재시도 횟수 초과");
   }
 
   private long extractWaitTime(String errorMessage) {
