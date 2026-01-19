@@ -39,8 +39,6 @@ public enum ErrorCode {
 
   // 분석 관련 오류
   ANALYSIS_NOT_FOUND(HttpStatus.NOT_FOUND, "ANALYSIS-404", "분석 결과를 찾을 수 없습니다."),
-  ANALYSIS_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "ANALYSIS-429",
-      "AI 분석 요청이 많아 일시적으로 지연되고 있습니다. 1분 후 다시 시도해 주세요."),
 
   // 공통 오류
   CLIENT_ERROR(HttpStatus.BAD_REQUEST, "CLIENT-400", "요청 형식이 올바르지 않습니다."),

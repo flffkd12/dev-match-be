@@ -51,7 +51,7 @@ public class AnalysisService {
 
     String aiResponse = callAiWithRetry(prompt);
     log.debug("AI 지원서 분석 응답: {}", aiResponse);
-    if (aiResponse.equals(STATIC_ANALYSIS_REQUIRED)) {
+    if (aiResponse == null || aiResponse.equals(STATIC_ANALYSIS_REQUIRED)) {
       aiResponse = analysisStaticGenerator.generateApplicationAnalysis(project, applicantSkills);
     }
 
@@ -67,7 +67,7 @@ public class AnalysisService {
 
     String aiResponse = callAiWithRetry(prompt);
     log.debug("AI 프로젝트 역할 분석 응답: {}", aiResponse);
-    if (aiResponse.equals(STATIC_ANALYSIS_REQUIRED)) {
+    if (aiResponse == null || aiResponse.equals(STATIC_ANALYSIS_REQUIRED)) {
       return analysisStaticGenerator.generateProjectRoleAssignment(approvedApplications);
     }
 
@@ -92,15 +92,18 @@ public class AnalysisService {
             .getOutput()
             .getText();
       } catch (Exception e) {
-        currentModel = handleRateLimitError(e.getMessage(), currentModel, retryCount, maxRetries);
-        if (currentModel.equals(STATIC_ANALYSIS_REQUIRED)) {
-          return STATIC_ANALYSIS_REQUIRED;
+        String errorMessage = e.getMessage();
+        if (errorMessage.contains("429")) {
+          currentModel = handleRateLimitError(errorMessage, currentModel, retryCount, maxRetries);
+          if (currentModel.equals(STATIC_ANALYSIS_REQUIRED)) {
+            return STATIC_ANALYSIS_REQUIRED;
+          }
         }
         retryCount++;
       }
     }
 
-    throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS, "AI 모델 호출 재시도 횟수 초과");
+    return STATIC_ANALYSIS_REQUIRED;
   }
 
   private String handleRateLimitError(
