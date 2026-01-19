@@ -82,9 +82,9 @@ class AnalysisStaticGenerator {
             String.join(", ", infraTechs));
       }
 
-      result.append(String.format("%s - %s | %s", nickname, role, reason));
-      result.append("\n시스템 문제로 간이 분석 결과가 제공되었습니다. 상세 검토를 권장합니다.");
+      result.append(String.format("%s - %s | %s\n", nickname, role, reason));
     }
+    result.append("시스템 문제로 간이 분석 결과가 제공되었습니다. 상세 검토를 권장합니다.");
 
     return result.toString();
   }
