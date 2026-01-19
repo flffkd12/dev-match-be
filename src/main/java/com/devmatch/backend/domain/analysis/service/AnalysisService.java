@@ -93,6 +93,9 @@ public class AnalysisService {
             .getText();
       } catch (Exception e) {
         currentModel = handleRateLimitError(e.getMessage(), currentModel, retryCount, maxRetries);
+        if (currentModel.equals(STATIC_ANALYSIS_REQUIRED)) {
+          return STATIC_ANALYSIS_REQUIRED;
+        }
         retryCount++;
       }
     }
