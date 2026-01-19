@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AnalysisService {
 
+  private final String STATIC_ANALYSIS_REQUIRED = "모든 AI 모델의 일일 할당량 초과";
+
   private final ChatModel chatModel;
   private final AnalysisPromptGenerator promptGenerator;
   private final String defaultModel;
@@ -46,6 +48,9 @@ public class AnalysisService {
 
     String aiResponse = callAiWithRetry(prompt);
     log.debug("AI 지원서 분석 응답: {}", aiResponse);
+    if (aiResponse.equals(STATIC_ANALYSIS_REQUIRED)) {
+      aiResponse = generateStaticApplicationAnalysis(project, applicantSkills);
+    }
 
     return Analysis.from(aiResponse);
   }
@@ -57,7 +62,13 @@ public class AnalysisService {
     String prompt = promptGenerator.generateRoleAssignmentPrompt(project, approvedApplications);
     log.debug("역할 분석 전체 프롬프트: {}", prompt);
 
-    return callAiWithRetry(prompt);
+    String aiResponse = callAiWithRetry(prompt);
+    log.debug("AI 프로젝트 역할 분석 응답: {}", aiResponse);
+    if (aiResponse.equals(STATIC_ANALYSIS_REQUIRED)) {
+      // TODO: 역할 분석용 정적 응답 로직 필요
+    }
+
+    return aiResponse;
   }
 
   private String callAiWithRetry(String promptText) {
@@ -103,10 +114,8 @@ public class AnalysisService {
 
     if (rateLimitType == RateLimitType.RPD) {
       if (currentModel.equals(fallbackModel)) {
-        log.error("Fallback 모델({})에서 RPD 발생. 더 이상 전환할 모델이 없습니다.", fallbackModel);
-        // TODO: 정적인 분석 결과로 전환할 것
-        throw new CustomException(ErrorCode.ANALYSIS_MANY_REQUESTS,
-            "모든 AI 모델의 일일 할당량이 초과되었습니다.");
+        log.warn("모든 AI 모델의 일일 할당량이 초과되었습니다. 정적 분석으로 전환합니다.");
+        return STATIC_ANALYSIS_REQUIRED;
       }
 
       log.info("RPD 감지됨. 모델을 {} -> {} 로 전환하여 재시도합니다.", currentModel, fallbackModel);
@@ -136,5 +145,32 @@ public class AnalysisService {
     }
 
     return 60000L;
+  }
+
+  private String generateStaticApplicationAnalysis(Project project, List<Skill> applicantSkills) {
+    List<String> projectTechs = project.getTechStacks();
+    List<String> matchedSkills = applicantSkills.stream()
+        .map(Skill::techStack)
+        .filter(skill -> projectTechs.stream()
+            .anyMatch(projectTech -> projectTech.equalsIgnoreCase(skill)))
+        .toList();
+
+    int score;
+    StringBuilder reason = new StringBuilder();
+
+    if (matchedSkills.isEmpty()) {
+      score = 40;
+      reason.append("프로젝트에서 요구하는 기술 스택과 일치하는 항목이 없습니다.");
+    } else {
+      double matchRate = (double) matchedSkills.size() / projectTechs.size();
+      score = 50 + (int) (matchRate * 40);
+      reason.append("프로젝트 요구 기술 중 [")
+          .append(String.join(", ", matchedSkills))
+          .append("]에 대한 역량을 보유하고 있어 긍정적입니다.");
+    }
+
+    reason.append("\n시스템 문제로 간이 분석 결과가 제공되었습니다. 상세 검토를 권장합니다.");
+
+    return score + " | " + reason;
   }
 }
