@@ -33,6 +33,8 @@ public enum ErrorCode {
   APPLICATION_SAME_STATUS(HttpStatus.BAD_REQUEST, "APPLICATION-400-2",
       "현재 상태와 동일한 상태로 변경할 수 없습니다."),
   APPLICATION_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "APPLICATION-400-3", "이미 해당 프로젝트에 지원하였습니다."),
+  APPLICATION_SKILL_NOT_MATCHED(HttpStatus.BAD_REQUEST, "APPLICATION-400-4",
+      "프로젝트에서 요구하지 않는 기술 스택이 포함되어 있습니다."),
   APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICATION-404", "지원서를 찾을 수 없습니다."),
 
   // 분석 관련 오류

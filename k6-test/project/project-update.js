@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import {check} from 'k6';
 import exec from 'k6/execution';
-import {BASE_URL, CONFIG, setAuth} from '../utils.js';
+import {BASE_URL, CONFIG, setAuth} from '../common/utils.js';
 import {getMyProjects} from './project-self-read.js';
 
 export const options = {

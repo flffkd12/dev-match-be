@@ -29,7 +29,7 @@ public class ApplicationService {
       List<Skill> skills,
       Analysis analysis
   ) {
-    validateApplicable(project, applicant);
+    validateApplicable(project, applicant, skills);
 
     Application application = Application.builder()
         .user(applicant)
@@ -98,13 +98,26 @@ public class ApplicationService {
     return applicationRepository.findByProjectIdAndStatus(projectId, status);
   }
 
-  private void validateApplicable(Project project, User applicant) {
+  private void validateApplicable(Project project, User applicant, List<Skill> skills) {
     if (project.getStatus() != ProjectStatus.RECRUITING) {
       throw new CustomException(ErrorCode.PROJECT_NOT_RECRUITING);
     }
 
     if (applicationRepository.existsByApplicantIdAndProjectId(applicant.getId(), project.getId())) {
       throw new CustomException(ErrorCode.APPLICATION_ALREADY_EXISTS);
+    }
+
+    List<String> projectTechStacks = project.getTechStacks().stream()
+        .map(String::toLowerCase)
+        .toList();
+
+    boolean allSkillsAllowed = skills.stream()
+        .map(Skill::techStack)
+        .map(String::toLowerCase)
+        .allMatch(projectTechStacks::contains);
+
+    if (!allSkillsAllowed) {
+      throw new CustomException(ErrorCode.APPLICATION_SKILL_NOT_MATCHED);
     }
   }
 }
