@@ -1,4 +1,4 @@
-<img width="1304" height="1137" alt="image" src="https://github.com/user-attachments/assets/4ed3904c-c13c-4bf3-865b-f242d59ebf7a" />
+<img width="832" height="730" alt="image" src="https://github.com/user-attachments/assets/4ed3904c-c13c-4bf3-865b-f242d59ebf7a" />
 
 # 🔍 DevMatch
 
@@ -19,3 +19,7 @@
 `함께할 동료의 정보`와 `프로젝트의 방향성`을 알 수 있으면 만족도 높은 만남을 가질 수 있겠다고 생각했어요.
 
 그렇게 동료들과 함께할 수 있는 서비스, `DevMatch`가 탄생하였습니다.
+
+## 기술 스택
+<h3>백엔드</h3>
+<img width="700" height="306" alt="image" src="https://github.com/user-attachments/assets/b2a2373d-efc6-40b6-b64f-612dd692fdbd" />
