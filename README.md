@@ -20,6 +20,25 @@
 
 그렇게 동료들과 함께할 수 있는 서비스, `DevMatch`가 탄생하였습니다.
 
+## 주요 기능 소개
+
+<h3>프로젝트를 생성해보세요</h3>
+<p>프로젝트의 목표와 방향성 등 필요한 정보를 기입하고 동료를 모아보세요!</p>
+
+![프로젝트 생성](https://github.com/user-attachments/assets/10917eaf-db9d-4e8f-aa55-114f95ab3a0a)
+
+<br>
+<h3>원하는 프로젝트에 지원하세요</h3>
+<p>프로젝트에 지원하고 AI 분석을 통해 본인의 적합도를 알아볼 수 있어요.</p>
+
+![지원서 생성](https://github.com/user-attachments/assets/8215ca4d-6c43-4fd6-8696-eedf1b50d9f9)
+
+<br>
+<h3>AI에게 역할 분배를 맡겨보세요</h3>
+<p>팀내 역할을 배분하고 싶을 때 제안 받을 수 있어요.</p>
+
+![프로젝트 역할분석](https://github.com/user-attachments/assets/8d06c66c-12f1-4210-b439-5e1eac2efe04)
+
 ## 기술 스택
 <h3>백엔드</h3>
 <img width="700" height="306" alt="image" src="https://github.com/user-attachments/assets/b2a2373d-efc6-40b6-b64f-612dd692fdbd" />
